@@ -8,7 +8,7 @@ public class Client extends Personne {
 	private Date dateSouscription;
 	private ProgrammeFidelite prgmFidelite;
 	private List<Devis> devis = new ArrayList<>();
-	private List<Facture> factures = new ArrayList<>();
+	private List<Location> locations = new ArrayList<>();
 
 	public Client(String nom, String prenom, String email, String telephone, Adresse adresse
 			) {
@@ -24,8 +24,8 @@ public class Client extends Personne {
 		this.devis.add(devis);
 	}
 	
-	public void addFacture(Facture facture) {
-		factures.add(facture);
+	public void addFacture(Location facture) {
+		locations.add(facture);
 	}
 	
 
