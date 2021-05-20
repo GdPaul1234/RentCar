@@ -1,6 +1,6 @@
 package model;
 
-public abstract class Employe extends Personne {
+public class Employe extends Personne {
 
 	private String login;
 	private String password;

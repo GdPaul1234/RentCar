@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.TextField;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -59,11 +62,18 @@ public class EditVehicleView extends JDialog {
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.TRAILING);
 		FlowLayout flowLeftLayout = new FlowLayout(FlowLayout.LEADING);
 		Dimension dimensionSelect = new Dimension(100, 20);
+		
+		InputVerifier checkNotEmpty = new InputVerifier() {
+			@Override
+			public boolean verify(JComponent input) {
+				return ! ((JTextField) input).getText().strip().equals("");
+			}
+		};
 
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
 		{
-			Box indentifiantPanel = new Box(BoxLayout.PAGE_AXIS);
+			Box indentifiantPanel = Box.createVerticalBox();
 			indentifiantPanel.setBorder(BorderFactory.createTitledBorder("Identification"));
 			contentPanel.add(indentifiantPanel);
 			{
@@ -74,6 +84,7 @@ public class EditVehicleView extends JDialog {
 					JLabel matriculeLabel = new JLabel("matricule");
 					nomPanel.add(matriculeLabel);
 					matriculeTextField.setColumns(textFieldWidth);
+					matriculeTextField.setInputVerifier(checkNotEmpty);
 					nomPanel.add(matriculeTextField);
 				}
 
@@ -83,6 +94,7 @@ public class EditVehicleView extends JDialog {
 					JLabel marqueLabel = new JLabel("marque");
 					marquePanel.add(marqueLabel);
 					marqueTextField.setColumns(textFieldWidth);
+					marqueTextField.setInputVerifier(checkNotEmpty);
 					marquePanel.add(marqueTextField);
 				}
 
@@ -92,11 +104,12 @@ public class EditVehicleView extends JDialog {
 					JLabel modeleLabel = new JLabel("modèle");
 					modelePanel.add(modeleLabel);
 					modeleTextField.setColumns(textFieldWidth);
+					modeleTextField.setInputVerifier(checkNotEmpty);
 					modelePanel.add(modeleTextField);
 				}
 			}
 
-			Box caracteristiquePanel = new Box(BoxLayout.PAGE_AXIS);
+			Box caracteristiquePanel = Box.createVerticalBox();
 			caracteristiquePanel.setBorder(BorderFactory.createTitledBorder("Caractéristique"));
 			contentPanel.add(caracteristiquePanel);
 			{
