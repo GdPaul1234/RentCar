@@ -11,6 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -21,20 +22,25 @@ import javax.swing.border.EmptyBorder;
 
 import model.enums.TypeBoite;
 import model.enums.TypeCarburant;
+import model.enums.TypeCategorie;
+import view.component.EditRessourceUtils;
+import javax.swing.SwingConstants;
 
 public class EditVehicleView extends JDialog {
 	
 	private static final long serialVersionUID = 8614996964673985215L;
 	private final JPanel contentPanel = new JPanel();
+	private static Dimension dimensionSelect = new Dimension(120, 20);
 	private static int textFieldWidth = 18;
 
 	private JTextField matriculeTextField = new JTextField();
 	private JTextField marqueTextField = new JTextField();
 	private JTextField modeleTextField = new JTextField();
 
-	private JTextField categorieSelect = new JTextField();
 	private JComboBox<TypeBoite> boiteSelect = new JComboBox(TypeBoite.getValues());
 	private JComboBox<TypeCarburant> carburantSelect = new JComboBox(TypeCarburant.getValues());
+	private JComboBox<TypeCategorie> categorieSelect = new JComboBox(TypeCategorie.getValues());
+	private JTextField kilometrageTextField = new JTextField();
 
 	/**
 	 * Launch the application.
@@ -61,14 +67,9 @@ public class EditVehicleView extends JDialog {
 
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.TRAILING);
 		FlowLayout flowLeftLayout = new FlowLayout(FlowLayout.LEADING);
-		Dimension dimensionSelect = new Dimension(100, 20);
 		
-		InputVerifier checkNotEmpty = new InputVerifier() {
-			@Override
-			public boolean verify(JComponent input) {
-				return ! ((JTextField) input).getText().strip().equals("");
-			}
-		};
+		
+		InputVerifier checkNotEmpty = EditRessourceUtils.getEmptyInputVerifier();
 
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
@@ -140,6 +141,28 @@ public class EditVehicleView extends JDialog {
 					categoriePanel.add(categorieLabel);
 					categorieSelect.setPreferredSize(dimensionSelect);
 					categoriePanel.add(categorieSelect);
+				}
+				
+				JPanel kilometragePanel = new JPanel(flowLeftLayout);
+				caracteristiquePanel.add(kilometragePanel);
+				{
+					Component rigidArea = Box.createRigidArea(new Dimension(30, 15));
+					kilometragePanel.add(rigidArea);
+					JLabel kilometrageLabel = new JLabel("km");
+					kilometragePanel.add(kilometrageLabel);
+					kilometrageTextField.setColumns(12);
+					kilometrageTextField.setInputVerifier(checkNotEmpty);
+					kilometragePanel.add(kilometrageTextField);
+				}
+				
+				JPanel climatisationPanel = new JPanel(flowLeftLayout);
+				caracteristiquePanel.add(climatisationPanel);
+				
+				Component rigidArea = Box.createRigidArea(new Dimension(30, 15));
+				climatisationPanel.add(rigidArea);
+				{
+					JCheckBox climatisationLabel = new JCheckBox("climatisation");
+					climatisationPanel.add(climatisationLabel);
 				}
 			}
 		}

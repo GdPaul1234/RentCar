@@ -4,7 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-// Singleton
+/**
+ * Connexion à la database (Singleton)
+ * @author Paul
+ *
+ */
 public class DataAccess {
 	private static DataAccess instance;
 	private Connection conn;
@@ -22,6 +26,10 @@ public class DataAccess {
 		}
 	}
 	
+	/**
+	 * Obtenir la connexion à la BDD rentcar
+	 * @return connexion à la BDD
+	 */
 	public Connection getConnection() {
 		return conn;
 	}
@@ -30,6 +38,10 @@ public class DataAccess {
 		conn.close();
 	}
 	
+	/**
+	 * Connexion à la BDD rentcar
+	 * @return instance de DataAccess
+	 */
 	public static synchronized DataAccess getInstance() {
 		if(instance == null) {
 			String[] args = {"jdbc:mysql://localhost:3306/rentcar","root","ultrasecurepwd"};

@@ -13,7 +13,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -27,12 +26,20 @@ import javax.swing.border.EmptyBorder;
 import controller.ClientDAO;
 import model.Adresse;
 import model.Client;
+import view.component.EditRessourceUtils;
 import view.component.WaitingDialog;
 
+/**
+ * Dialogue édition client
+ * 
+ * @author Paul
+ *
+ */
 public class EditClientView extends JDialog implements EditView, ActionListener {
 	private static final long serialVersionUID = -7859216121456496255L;
 	private final JPanel contentPane = new JPanel();
 	private static int textFieldWidth = 18;
+	private int clientID = -1;
 
 	private JTextField nomTextField = new JTextField();
 	private JTextField prenomTextField = new JTextField();
@@ -53,6 +60,11 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 	private boolean error = false;
 
 	class Task extends SwingWorker<Void, Void> {
+		/**
+		 * Vérifier si tous les champs ont été remplis
+		 * 
+		 * @return
+		 */
 		private boolean validate() {
 			String[] textFieldValues = { nomTextField.getText(), prenomTextField.getText(), emailTextField.getText(),
 					telTextField.getText(), rueTextField.getText(), villeTextField.getText(), cpTextField.getText() };
@@ -80,9 +92,12 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 
 				ClientDAO clientDB = new ClientDAO();
 				try {
-					// TODO ajouter check dans database si doublon
-					// TODO ajouter édition client
-					clientDB.addClient(newClient);
+					if (createClient)
+						clientDB.addClient(newClient);
+					else
+						clientDB.editClient(clientID, newClient);
+
+					error = false;
 				} catch (SQLException e) {
 					error = true;
 					e.printStackTrace();
@@ -115,7 +130,7 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 	 */
 	public static void main(String[] args) {
 		try {
-			// EditClientView dialog = new EditClientView();
+			//EditClientView dialog = new EditClientView();
 			EditClientView dialog = new EditClientView(1);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
@@ -124,10 +139,20 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 		}
 	}
 
+	/**
+	 * Default constructor<br>
+	 * Create client
+	 */
 	public EditClientView() {
 		createUI();
 	}
 
+	/**
+	 * Edit client
+	 * 
+	 * @param clientID clientID to edit
+	 * @throws SQLException
+	 */
 	public EditClientView(int clientID) throws SQLException {
 		ClientDAO clientDB = new ClientDAO();
 		Client client = clientDB.getClient(clientID);
@@ -146,6 +171,7 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 		}
 
 		// passer en mode edition
+		this.clientID = clientID;
 
 		createUI();
 	}
@@ -155,6 +181,9 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 		String action = e.getActionCommand();
 
 		switch (action) {
+		/**
+		 * Create or edit client
+		 */
 		case "OK":
 			// Launch wait UI
 			waiting = new WaitingDialog(frame);
@@ -166,6 +195,9 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 			task.execute();
 			break;
 
+		/**
+		 * Cancel edit
+		 */
 		case "Cancel":
 			dispose();
 			break;
@@ -187,13 +219,8 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.TRAILING);
-
-		InputVerifier checkNotEmpty = new InputVerifier() {
-			@Override
-			public boolean verify(JComponent input) {
-				return !((JTextField) input).getText().strip().equals("");
-			}
-		};
+		InputVerifier checkNotEmpty = EditRessourceUtils.getEmptyInputVerifier();
+		InputVerifier getUpperEmptyInputVerifier = EditRessourceUtils.getUpperEmptyInputVerifier();
 
 		getContentPane().add(contentPane, BorderLayout.CENTER);
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
@@ -208,7 +235,7 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 					JLabel nomLabel = new JLabel("nom");
 					nomPanel.add(nomLabel);
 					nomTextField.setColumns(textFieldWidth);
-					nomTextField.setInputVerifier(checkNotEmpty);
+					nomTextField.setInputVerifier(getUpperEmptyInputVerifier);
 					nomPanel.add(nomTextField);
 				}
 
@@ -277,7 +304,7 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 					JLabel villeLabel = new JLabel("Ville");
 					villePanel.add(villeLabel);
 					villeTextField.setColumns(10);
-					villeTextField.setInputVerifier(checkNotEmpty);
+					villeTextField.setInputVerifier(getUpperEmptyInputVerifier);
 					villePanel.add(villeTextField);
 				}
 			}
