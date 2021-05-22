@@ -3,6 +3,7 @@ package model;
 import model.interfaces.TabularObjectBuilder;
 
 public abstract class Personne extends TabularObjectBuilder {
+	protected int personneID;
 	protected String nom;
 	protected String prenom;
 	protected String email;
@@ -19,6 +20,10 @@ public abstract class Personne extends TabularObjectBuilder {
 	}
 
 	/* Getters */
+	public int getPersonneID() {
+		return personneID;
+	}
+
 	public String getNom() {
 		return nom;
 	}
@@ -39,9 +44,14 @@ public abstract class Personne extends TabularObjectBuilder {
 		return adresse;
 	}
 
+	/* Setters */
+	public void setPersonneID(int personneID) {
+		this.personneID = personneID;
+	}
+
 	@Override
 	public Object[] toArray() {
-		Object[] pArray = { nom, prenom, email, telephone };
+		Object[] pArray = { personneID, nom, prenom, email, telephone };
 		Object[] aArray = adresse.toArray();
 
 		// merge pArray and aArray
@@ -50,11 +60,11 @@ public abstract class Personne extends TabularObjectBuilder {
 		System.arraycopy(aArray, 0, array, pArray.length, aArray.length);
 		return array;
 	}
-	
+
 	public static String[] getHeader() {
-		String[] pHeader = { "nom","prénom","email","téléphone" };
+		String[] pHeader = { "id", "nom", "prénom", "email", "téléphone" };
 		String[] aHeader = Adresse.getHeader();
-		
+
 		// merge pArray and aArray
 		String[] header = new String[pHeader.length + aHeader.length];
 		System.arraycopy(pHeader, 0, header, 0, pHeader.length);

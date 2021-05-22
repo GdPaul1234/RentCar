@@ -17,10 +17,10 @@ import model.Vehicule;
 import model.interfaces.TabularObjectBuilder;
 
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 
 public class MainView extends JFrame {
-
+	private static final long serialVersionUID = -7153177848312153616L;
+	
 	private JPanel contentPane;
 
 	/**
@@ -55,17 +55,6 @@ public class MainView extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
-		// Dummy component
-		ClientDAO clientDAO = new ClientDAO();
-		List<Client> clients = null;
-		try {
-			clients = clientDAO.getClientList();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String[] cHeader = Client.getHeader();
-
 		try {
 			RessourceEditorView<Client> clientsView = createRessourceView("Client");
 			RessourceEditorView<Vehicule> vehiculesView = createRessourceView("Vehicule");
@@ -75,13 +64,13 @@ public class MainView extends JFrame {
 			tabbedPane.addTab("Véhicules", vehiculesView);
 			tabbedPane.addTab("Performance", text3);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
+	// TODO move this to RessourceEditorView
 	public <T extends TabularObjectBuilder> RessourceEditorView<T> createRessourceView(String typeRessource)
 			throws SQLException {
 		switch (typeRessource) {

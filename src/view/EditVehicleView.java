@@ -146,6 +146,13 @@ public class EditVehicleView extends JDialog implements ActionListener {
 			e.printStackTrace();
 		}
 	}
+	
+	public void run(Component frame) {
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(frame);
+		setModal(true);
+		setVisible(true);
+	}
 
 	/**
 	 * Default constructor<br>
