@@ -7,6 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import model.Client;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
@@ -47,15 +50,13 @@ public class MainView extends JFrame {
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
 		// Dummy component
-		RessourceView clientsView = new RessourceView();
+		RessourceView clientsView = new RessourceView(null);
 		JLabel text2 = new JLabel("Texte 2");
 		JLabel text3 = new JLabel("Texte 3");
-		JLabel text4 = new JLabel("Texte 4");
 
 		tabbedPane.addTab("Clients", clientsView);
 		tabbedPane.addTab("Véhicules", text2);
-		tabbedPane.addTab("Locations", text3);
-		tabbedPane.addTab("Performance", text4);
+		tabbedPane.addTab("Performance", text3);
 	}
 
 }

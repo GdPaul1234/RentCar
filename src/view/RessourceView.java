@@ -5,6 +5,7 @@ import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.JButton;
@@ -18,7 +19,7 @@ public class RessourceView<T> extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public RessourceView() {
+	public RessourceView(List<T> ressources) {
 		setLayout(new BorderLayout(0, 0));
 
 		FlowLayout searchPanel = new FlowLayout();

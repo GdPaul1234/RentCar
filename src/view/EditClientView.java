@@ -35,7 +35,7 @@ import view.component.WaitingDialog;
  * @author Paul
  *
  */
-public class EditClientView extends JDialog implements EditView, ActionListener {
+public class EditClientView extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -7859216121456496255L;
 	private final JPanel contentPane = new JPanel();
 	private static int textFieldWidth = 18;
@@ -45,9 +45,9 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 	private JTextField prenomTextField = new JTextField();
 	private JTextField emailTextField = new JTextField();
 	private JFormattedTextField telTextField = new JFormattedTextField(
-			EditView.createFormatter("+33 (#) # ## ## ## ##"));
+			EditRessourceUtils.createFormatter("+33 (#) # ## ## ## ##"));
 	private JTextField rueTextField = new JTextField();
-	private JFormattedTextField cpTextField = new JFormattedTextField(EditView.createFormatter("#####"));
+	private JFormattedTextField cpTextField = new JFormattedTextField(EditRessourceUtils.createFormatter("#####"));
 	private JTextField villeTextField = new JTextField();
 
 	private JDialog frame = this;
@@ -57,9 +57,10 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 	private Task task;
 	private WaitingDialog waiting;
 	private boolean createClient = true;
-	private boolean error = false;
 
 	class Task extends SwingWorker<Void, Void> {
+		private boolean error = false;
+		
 		/**
 		 * Vérifier si tous les champs ont été remplis
 		 * 
@@ -130,8 +131,8 @@ public class EditClientView extends JDialog implements EditView, ActionListener 
 	 */
 	public static void main(String[] args) {
 		try {
-			//EditClientView dialog = new EditClientView();
-			EditClientView dialog = new EditClientView(1);
+			EditClientView dialog = new EditClientView();
+			//EditClientView dialog = new EditClientView(1);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
