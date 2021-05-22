@@ -2,13 +2,19 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import controller.ClientDAO;
+import controller.VehiculeDAO;
 import model.Client;
+import model.Vehicule;
+import model.interfaces.TabularObjectBuilder;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -50,13 +56,51 @@ public class MainView extends JFrame {
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
 
 		// Dummy component
-		RessourceView clientsView = new RessourceView(null);
-		JLabel text2 = new JLabel("Texte 2");
-		JLabel text3 = new JLabel("Texte 3");
+		ClientDAO clientDAO = new ClientDAO();
+		List<Client> clients = null;
+		try {
+			clients = clientDAO.getClientList();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] cHeader = Client.getHeader();
 
-		tabbedPane.addTab("Clients", clientsView);
-		tabbedPane.addTab("Véhicules", text2);
-		tabbedPane.addTab("Performance", text3);
+		try {
+			RessourceEditorView<Client> clientsView = createRessourceView("Client");
+			RessourceEditorView<Vehicule> vehiculesView = createRessourceView("Vehicule");
+			JLabel text3 = new JLabel("Texte 3");
+
+			tabbedPane.addTab("Clients", clientsView);
+			tabbedPane.addTab("Véhicules", vehiculesView);
+			tabbedPane.addTab("Performance", text3);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends TabularObjectBuilder> RessourceEditorView<T> createRessourceView(String typeRessource)
+			throws SQLException {
+		switch (typeRessource) {
+		case "Client":
+			ClientDAO clientDAO = new ClientDAO();
+			List<Client> clients = clientDAO.getClientList();
+			String[] cHeader = Client.getHeader();
+			return (RessourceEditorView<T>) new RessourceEditorView<Client>(cHeader, clients);
+
+		case "Vehicule":
+			VehiculeDAO vehiculeDAO = new VehiculeDAO();
+			List<Vehicule> vehicules = vehiculeDAO.getVehiculeList();
+			String[] vHeader = Vehicule.getHeader();
+			return (RessourceEditorView<T>) new RessourceEditorView<Vehicule>(vHeader, vehicules);
+
+		default:
+		}
+
+		return null;
 	}
 
 }

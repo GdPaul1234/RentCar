@@ -41,16 +41,15 @@ public class EditVehicleView extends JDialog implements ActionListener {
 	private final JPanel contentPanel = new JPanel();
 	private static Dimension dimensionSelect = new Dimension(120, 20);
 	private static Dimension dimensionMatricule = new Dimension(75, 20);
-	private String matricule = "";
 
 	private JFormattedTextField matriculeTextField = new JFormattedTextField(
 			EditRessourceUtils.createFormatter("UU'-###'-UU"));
 	private JTextField marqueTextField = new JTextField();
 	private JTextField modeleTextField = new JTextField();
 
-	private JComboBox<TypeBoite> boiteSelect = new JComboBox(TypeBoite.getValues());
-	private JComboBox<TypeCarburant> carburantSelect = new JComboBox(TypeCarburant.getValues());
-	private JComboBox<TypeCategorie> categorieSelect = new JComboBox(TypeCategorie.getValues());
+	private JComboBox<TypeBoite> boiteSelect = new JComboBox<>(TypeBoite.getValues());
+	private JComboBox<TypeCarburant> carburantSelect = new JComboBox<>(TypeCarburant.getValues());
+	private JComboBox<TypeCategorie> categorieSelect = new JComboBox<>(TypeCategorie.getValues());
 	private JSpinner kilometrageSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 999999, 1));
 	private JCheckBox climatisationCheckBox = new JCheckBox("climatisation");
 
@@ -182,7 +181,6 @@ public class EditVehicleView extends JDialog implements ActionListener {
 		}
 
 		// passer en mode edition
-		this.matricule = matricule;
 
 		createUI();
 	}

@@ -5,8 +5,9 @@ import java.math.BigDecimal;
 import model.enums.TypeBoite;
 import model.enums.TypeCarburant;
 import model.enums.TypeCategorie;
+import model.interfaces.TabularObjectBuilder;
 
-public class Vehicule {
+public class Vehicule extends TabularObjectBuilder {
 	private String matricule;
 	private String marque;
 	private String modele;
@@ -61,12 +62,23 @@ public class Vehicule {
 		return categorie;
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Vehicule [matricule=" + matricule + ", marque=" + marque + ", modele=" + modele + ", kilometrage="
 				+ kilometrage + ", typeBoite=" + typeBoite + ", typeCarburant=" + typeCarburant + ", climatisation="
 				+ climatisation + ", categorie=" + categorie + "]";
 	}
-	
+
+	@Override
+	public Object[] toArray() {
+		Object[] array = { matricule, marque, modele, kilometrage, typeBoite, typeCarburant, climatisation, categorie };
+		return array;
+	}
+
+	public static String[] getHeader() {
+		String[] header = { "matricule", "marque", "modèle", "kilométrage", "boîte", "carburant", "climatisation",
+				"catégorie" };
+		return header;
+	}
+
 }

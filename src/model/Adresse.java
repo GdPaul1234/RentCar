@@ -1,6 +1,8 @@
 package model;
 
-public class Adresse {
+import model.interfaces.TabularObjectBuilder;
+
+public class Adresse extends TabularObjectBuilder {
 	private String rue;
 	private String ville;
 	private String codePostal;
@@ -23,6 +25,18 @@ public class Adresse {
 
 	public String getCodePostal() {
 		return codePostal;
+	}
+
+	@Override
+	public Object[] toArray() {
+		Object[] array = { rue, codePostal, ville };
+		return array;
+	}
+
+
+	public static String[] getHeader() {
+		String[] header = { "rue", "CP", "ville" };
+		return header;
 	}
 
 }
