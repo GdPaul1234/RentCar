@@ -6,8 +6,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -23,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
@@ -33,7 +37,6 @@ import model.enums.TypeCarburant;
 import model.enums.TypeCategorie;
 import view.component.EditRessourceUtils;
 import view.component.WaitingDialog;
-import javax.swing.SwingConstants;
 
 public class EditVehicleView extends JDialog implements ActionListener {
 
@@ -87,7 +90,7 @@ public class EditVehicleView extends JDialog implements ActionListener {
 		 * ProgressBarDemo2Project/src/components/ProgressBarDemo2.java
 		 */
 		@Override
-		public Void doInBackground() {
+		protected Void doInBackground() {
 			// Create vehicle
 			if (validate()) {
 				Vehicule newVehicule = new Vehicule(matriculeTextField.getText(), marqueTextField.getText(),
@@ -95,8 +98,7 @@ public class EditVehicleView extends JDialog implements ActionListener {
 						(TypeBoite) boiteSelect.getSelectedItem(), (TypeCarburant) carburantSelect.getSelectedItem(),
 						climatisationCheckBox.isSelected(), (TypeCategorie) categorieSelect.getSelectedItem());
 				VehiculeDAO vehiculeDAO = new VehiculeDAO();
-				
-				
+
 				try {
 					if (createVehicule) {
 						vehiculeDAO.addVehicule(newVehicule);
@@ -123,7 +125,8 @@ public class EditVehicleView extends JDialog implements ActionListener {
 		/*
 		 * Executed in event dispatch thread
 		 */
-		public void done() {
+		@Override
+		protected void done() {
 			okButton.setEnabled(true);
 			cancelButton.setEnabled(true);
 			waiting.close();
@@ -139,19 +142,30 @@ public class EditVehicleView extends JDialog implements ActionListener {
 	public static void main(String[] args) {
 		try {
 			EditVehicleView dialog = new EditVehicleView();
-		    //EditVehicleView dialog = new EditVehicleView("AG-123-GA");
+			// EditVehicleView dialog = new EditVehicleView("AG-123-GA");
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void run(Component frame) {
+
+	public CompletableFuture<Void> run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(frame);
 		setModal(true);
 		setVisible(true);
+
+		CompletableFuture<Void> finishEditing = new CompletableFuture<>();
+
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent we) {
+				System.out.println("Finish editing");
+				finishEditing.complete(null);
+			}
+		});
+		return finishEditing;
 	}
 
 	/**
@@ -227,7 +241,7 @@ public class EditVehicleView extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog.
 	 */
-	public void createUI() {
+	private void createUI() {
 		setTitle("Edition véhicule");
 		setResizable(false);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

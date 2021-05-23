@@ -6,7 +6,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -84,7 +87,7 @@ public class EditClientView extends JDialog implements ActionListener {
 		 * ProgressBarDemo2Project/src/components/ProgressBarDemo2.java
 		 */
 		@Override
-		public Void doInBackground() {
+		protected Void doInBackground() {
 			// Create client
 			if (validate()) {
 				Client newClient = new Client(nomTextField.getText(), prenomTextField.getText(),
@@ -116,7 +119,8 @@ public class EditClientView extends JDialog implements ActionListener {
 		/*
 		 * Executed in event dispatch thread
 		 */
-		public void done() {
+		@Override
+		protected void done() {
 			okButton.setEnabled(true);
 			cancelButton.setEnabled(true);
 			waiting.close();
@@ -140,11 +144,23 @@ public class EditClientView extends JDialog implements ActionListener {
 		}
 	}
 	
-	public void run(Component frame) {
+	public CompletableFuture<Void> run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(frame);
 		setModal(true);
 		setVisible(true);
+		
+		CompletableFuture<Void> finishEditing = new CompletableFuture<>();
+		
+		this.addWindowListener(
+		new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent we) {
+				System.out.println("Finish editing");
+				finishEditing.complete(null);
+			}
+		});
+		return finishEditing;
 	}
 
 	/**
@@ -219,7 +235,7 @@ public class EditClientView extends JDialog implements ActionListener {
 	/**
 	 * Create the dialog.
 	 */
-	public void createUI() {
+	private void createUI() {
 		setTitle("Edition client");
 		setResizable(false);
 		// setBounds(100, 100, 450, 300);

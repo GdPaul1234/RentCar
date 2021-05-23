@@ -1,63 +1,210 @@
 package view;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import javax.swing.JTable;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingWorker;
 
 import controller.ClientDAO;
 import controller.VehiculeDAO;
+import model.Client;
+import model.Vehicule;
 import model.interfaces.TabularObjectBuilder;
 import view.component.RessourceSelector;
+import view.component.WaitingDialog;
 
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.JComboBox;
-import java.awt.Component;
-import javax.swing.Box;
-
-public class RessourceEditorView<T extends TabularObjectBuilder> extends JPanel implements ActionListener {
+public class RessourceEditorView extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 5943840322040278648L;
 
 	private JButton addButton = new JButton("➕ Ajout.");
 	private JButton editButton = new JButton("📝 Editer");
 	private JButton delButton = new JButton("➖ Suppr.");
-
-	private RessourceSelector<T> ressourceSelector;
 	private JTextField searchTextField;
-	private String type = "undefined";
-	
-	// TODO Refresh table model after database modification
+	private RessourceSelector ressourceSelector;
+
+	private WaitingDialog waiting;
+	private String typeRessource;
+
 
 	/**
 	 * Create the panel.
 	 */
-	public RessourceEditorView(String[] header, List<T> data) {
-		setLayout(new BorderLayout(0, 0));
+	public RessourceEditorView(String typeRessource) {
+		// set typeRessource
+		this.typeRessource = typeRessource;
 
-		// infer type of data
-		if (data.size() > 0) {
-			type = data.get(0).getClass().toString();
-			System.out.println(type);
+		setLayout(new BorderLayout(0, 0));
+		createUI();
+
+	}
+
+	class RefreshTask extends SwingWorker<List<?>, Void> {
+
+		@Override
+		protected List<?> doInBackground() throws Exception {
+			switch (typeRessource) {
+			case "Client":
+				ClientDAO clientDAO = new ClientDAO();
+				List<Client> clients = clientDAO.getClientList();
+				return clients;
+
+			case "Vehicule":
+				VehiculeDAO vehiculeDAO = new VehiculeDAO();
+				List<Vehicule> vehicules = vehiculeDAO.getVehiculeList();
+				return vehicules;
+
+			default:
+			}
+
+			return null;
 		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		protected void done() {
+			try {
+				System.out.println("Finishing refresh table data");
+				ressourceSelector.refreshTable((List<TabularObjectBuilder>) get());
+
+				// hide column clientID
+				if (typeRessource.equals("Client"))
+					ressourceSelector.hideFirstColumn();
+
+				// close waiting dialog if exists
+				if (waiting != null)
+					waiting.close();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public String[] getRessourceSelectorHeader() {
+		switch (typeRessource) {
+		case "Client":
+			return Client.getHeader();
+
+		case "Vehicule":
+			return Vehicule.getHeader();
+
+		default:
+		}
+
+		return null;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String action = e.getActionCommand();
+
+		Object ressourceID = ressourceSelector.getSelectedRessourceID();
+		if (ressourceID != null) {
+			// Lancer l'animation d'attente
+			waiting = new WaitingDialog(this);
+
+			switch (action) {
+			case "add":
+				switch (typeRessource) {
+				case "Client":
+					new EditClientView().run(this).thenRun(() -> new RefreshTask().execute());
+					break;
+
+				case "Vehicule":
+					new EditVehicleView().run(this).thenRun(() -> new RefreshTask().execute());
+					break;
+
+				default:
+				}
+				break;
+
+			case "edit":
+				if (ressourceID != null) {
+					try {
+						switch (typeRessource) {
+						case "Client":
+							new EditClientView((int) ressourceID).run(this).thenRun(() -> new RefreshTask().execute());
+							break;
+
+						case "Vehicule":
+							new EditVehicleView((String) ressourceID).run(this)
+									.thenRun(() -> new RefreshTask().execute());
+							break;
+
+						default:
+						}
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(this, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+					}
+					break;
+				}
+
+			case "del":
+				if (ressourceID != null) {
+					int choix = JOptionPane.showConfirmDialog(this, "Voulez-vous supprimer cet élément ?", "",
+							JOptionPane.YES_NO_OPTION);
+
+					if (choix == JOptionPane.YES_OPTION) {
+						try {
+							switch (typeRessource) {
+							case "Client":
+								new ClientDAO().removeClient((int) ressourceID);
+								break;
+
+							case "Vehicule":
+								new VehiculeDAO().removeVehicule((String) ressourceID);
+								break;
+
+							default:
+							}
+
+							// refresh la table et arrêter l'animation
+							new RefreshTask().execute();
+							waiting.close();
+						} catch (SQLException e2) {
+							e2.printStackTrace();
+							JOptionPane.showMessageDialog(this, e2.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+
+					break;
+				}
+
+			default:
+			}
+		}
+
+	}
+
+	/**
+	 * Create the view.
+	 */
+	private void createUI() {
 
 		{
 			JToolBar searchToolBar = new JToolBar();
+			searchToolBar.setFloatable(false);
 			add(searchToolBar, BorderLayout.NORTH);
 			{
+				searchToolBar.addSeparator(new Dimension(25, 20));
+
 				{
 					searchTextField = new JTextField();
+					searchTextField.setToolTipText("");
 					searchToolBar.add(searchTextField);
 					searchTextField.setColumns(10);
 
@@ -72,26 +219,27 @@ public class RessourceEditorView<T extends TabularObjectBuilder> extends JPanel 
 					JLabel lblNewLabel = new JLabel("Filt.");
 					searchToolBar.add(lblNewLabel);
 
-					JComboBox comboBox = new JComboBox();
+					JComboBox<?> comboBox = new JComboBox<Object>();
 					searchToolBar.add(comboBox);
 				}
+
+				searchToolBar.addSeparator(new Dimension(25, 20));
 			}
 
 		}
 
 		/* JTable affichant la liste des ressources disponibles */
 		{
-			ressourceSelector = new RessourceSelector<T>(header, data);
-			if (type.equals("class model.Client")) {
-				// hide column clientID
-				ressourceSelector.hideFirstColumn();
-			}
+
+			ressourceSelector = new RessourceSelector(getRessourceSelectorHeader());
+			new RefreshTask().execute();
 			add(ressourceSelector);
 		}
 
 		/* Container pour les actions sur les ressources */
 		{
 			JToolBar actionToolBar = new JToolBar();
+			actionToolBar.setFloatable(false);
 
 			Component glue_left = Box.createGlue();
 			actionToolBar.add(glue_left);
@@ -100,9 +248,13 @@ public class RessourceEditorView<T extends TabularObjectBuilder> extends JPanel 
 			addButton.addActionListener(this);
 			actionToolBar.add(addButton);
 
+			actionToolBar.addSeparator();
+
 			editButton.setActionCommand("edit");
 			editButton.addActionListener(this);
 			actionToolBar.add(editButton);
+
+			actionToolBar.addSeparator();
 
 			delButton.setActionCommand("del");
 			delButton.addActionListener(this);
@@ -111,83 +263,6 @@ public class RessourceEditorView<T extends TabularObjectBuilder> extends JPanel 
 			add(actionToolBar, BorderLayout.SOUTH);
 			Component glue_right = Box.createGlue();
 			actionToolBar.add(glue_right);
-		}
-
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String action = e.getActionCommand();
-
-		Object ressourceID = ressourceSelector.getSelectedRessourceID();
-		System.out.println(ressourceID);
-
-		switch (action) {
-		case "add":
-			switch (type) {
-			case "class model.Client":
-				new EditClientView().run(this);
-				break;
-
-			case "class model.Vehicule":
-				new EditVehicleView().run(this);
-				break;
-
-			default:
-			}
-			break;
-
-		case "edit":
-			if (ressourceID != null) {
-				try {
-					switch (type) {
-					case "class model.Client":
-						new EditClientView((int) ressourceID).run(this);
-						break;
-
-					case "class model.Vehicule":
-						new EditVehicleView((String) ressourceID).run(this);
-						break;
-
-					default:
-					}
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-				}
-				break;
-			}
-			break;
-
-		case "del":
-			if (ressourceID != null) {
-				int choix = JOptionPane.showConfirmDialog(this, "Voulez-vous supprimer cet élément ?", "",
-						JOptionPane.YES_NO_OPTION);
-
-				if (choix == JOptionPane.YES_OPTION) {
-					try {
-						switch (type) {
-						case "class model.Client":
-								new ClientDAO().removeClient((int) ressourceID);
-							break;
-
-						case "class model.Vehicule":
-								new VehiculeDAO().removeVehicule((String) ressourceID);
-							break;
-
-						default:
-						}
-					} catch (SQLException e2) {
-						e2.printStackTrace();
-						JOptionPane.showMessageDialog(this, e2.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-					}
-				}
-
-				break;
-			}
-			break;
-
-		default:
 		}
 	}
 
