@@ -3,21 +3,20 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import view.component.viewer.ClientViewer;
-import model.Adresse;
+
 import model.Client;
-import model.ProgrammeFidelite;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JLabel;
+import view.component.viewer.ClientViewer;
 
 public class ManageClientView extends JDialog {
 	private static final long serialVersionUID = 8605274728883691615L;
@@ -25,7 +24,7 @@ public class ManageClientView extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		try {
 			// test
 			Client client = new Client("Nom", "Prenom", "nom.prenom@mail.com", "+33 (0) 1 23 45 67 89",
@@ -38,7 +37,7 @@ public class ManageClientView extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	public void run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

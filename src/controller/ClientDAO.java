@@ -74,13 +74,8 @@ public class ClientDAO {
 		return client;
 	}
 
-	/**
-	 * Insérer une adresse
-	 * 
-	 * @param adresse adresse à ajouter
-	 * @throws SQLException
-	 */
-	public void insertAdresse(Adresse adresse) throws SQLException {
+	
+	private void insertAdresse(Adresse adresse) throws SQLException {
 		PreparedStatement stmtAdresse = instance.getConnection()
 				.prepareStatement("insert into Adresse(rue,ville,CP) values(?,?,?)");
 		stmtAdresse.setString(1, adresse.getRue());
@@ -90,7 +85,7 @@ public class ClientDAO {
 		stmtAdresse.close();
 	}
 
-	public boolean isAdresseExistante(Adresse adresse) throws SQLException {
+	private boolean isAdresseExistante(Adresse adresse) throws SQLException {
 		PreparedStatement stmtAdresse = instance.getConnection()
 				.prepareStatement("select count(*) as count from Adresse where rue=? AND ville=? AND cp=?;");
 		stmtAdresse.setString(1, adresse.getRue());
