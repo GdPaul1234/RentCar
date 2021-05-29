@@ -1,6 +1,7 @@
 package model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import model.enums.TypeBoite;
 import model.enums.TypeCarburant;
@@ -79,6 +80,10 @@ public class Vehicule extends TabularObjectBuilder {
 		String[] header = { "matricule", "marque", "modèle", "kilométrage", "boîte", "carburant", "climatisation",
 				"catégorie" };
 		return header;
+	}
+	
+	public static List<Integer> getColumnsWidth() {
+		return List.of(50, 75, 100, 50, 75, 75, 20, 75);
 	}
 
 }

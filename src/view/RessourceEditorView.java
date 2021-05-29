@@ -88,11 +88,27 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 
 				System.out.println("Finishing refresh table data");
 				ressourceSelector.refreshTable((List<TabularObjectBuilder>) get());
-
+				
+				// setting and changing column widths
+				switch(typeRessource) {
+				case "Client":
+					ressourceSelector.resizeColumns(Client.getColumnsWidth());
+					break;
+					
+				case "Vehicule":
+					ressourceSelector.resizeColumns(Vehicule.getColumnsWidth());
+					break;
+					
+				case "Agence":
+					ressourceSelector.resizeColumns(Agence.getColumnsWidth());
+					break;
+				default:
+				}
+				
 				// hide column clientID
 				if (typeRessource.equals("Client") || typeRessource.equals("Agence"))
 					ressourceSelector.hideFirstColumn();
-
+				
 				// close waiting dialog
 				waiting.close();
 			} catch (InterruptedException | ExecutionException e) {

@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.interfaces.TabularObjectBuilder;
 
 public abstract class Personne extends TabularObjectBuilder {
@@ -70,6 +73,13 @@ public abstract class Personne extends TabularObjectBuilder {
 		System.arraycopy(pHeader, 0, header, 0, pHeader.length);
 		System.arraycopy(aHeader, 0, header, pHeader.length, aHeader.length);
 		return header;
+	}
+
+	public static List<Integer> getColumnsWidth() {
+		List<Integer> result = new ArrayList<>();
+		result.addAll(List.of(0, 100, 100, 225, 150));
+		result.addAll(Adresse.getColumnsWidth());
+		return result;
 	}
 
 }

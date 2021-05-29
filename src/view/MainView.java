@@ -37,7 +37,7 @@ public class MainView extends JFrame {
 	 */
 	public MainView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(100, 100, 640, 480);
+		setBounds(100, 100, 800, 600);
 		setTitle("RentCar");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -55,7 +55,6 @@ public class MainView extends JFrame {
 		tabbedPane.addTab("Clients", clientsView);
 		tabbedPane.addTab("Véhicules", vehiculesView);
 		tabbedPane.addTab("Agences", agenceView);
-
 	}
 
 }

@@ -86,7 +86,7 @@ public class Agence extends TabularObjectBuilder {
 
 	@Override
 	public Object[] toArray() {
-		Object[] agArray = { identifiant, nom, telephone, geolocalisation, occupation, capacite };
+		Object[] agArray = { identifiant, nom, telephone, occupation, capacite, geolocalisation };
 		Object[] adArray = adresse.toArray();
 		
 		// merge pArray and aArray
@@ -97,7 +97,7 @@ public class Agence extends TabularObjectBuilder {
 	}
 	
 	public static String[] getHeader() {
-		String[] agHeader = { "id", "nom", "téléphone", "géolocalisation", "occupation", "capacite" };
+		String[] agHeader = { "id", "nom", "téléphone", "occupation", "capacite", "géolocalisation" };
 		String[] adHeader = Adresse.getHeader();
 
 		// merge pArray and aArray
@@ -105,6 +105,13 @@ public class Agence extends TabularObjectBuilder {
 		System.arraycopy(agHeader, 0, header, 0, agHeader.length);
 		System.arraycopy(adHeader, 0, header, agHeader.length, adHeader.length);
 		return header;
+	}
+	
+	public static List<Integer> getColumnsWidth() {
+		List<Integer> result = new ArrayList<>();
+		result.addAll(List.of(0, 250, 150, 50, 50, 100));
+		result.addAll(Adresse.getColumnsWidth());
+		return result;
 	}
 
 }

@@ -62,7 +62,6 @@ public class Client extends Personne {
 	public void setDateSouscription(java.sql.Date dateSouscription) {
 		this.dateSouscription = dateSouscription;
 	}
-
 	
 
 }

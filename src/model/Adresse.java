@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 import model.interfaces.TabularObjectBuilder;
 
 public class Adresse extends TabularObjectBuilder {
@@ -33,10 +35,14 @@ public class Adresse extends TabularObjectBuilder {
 		return array;
 	}
 
-
 	public static String[] getHeader() {
 		String[] header = { "rue", "CP", "ville" };
 		return header;
+	}
+	
+
+	public static List<Integer> getColumnsWidth() {
+		return List.of(200, 75, 100);
 	}
 
 }
