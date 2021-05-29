@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Adresse;
+import model.Agence;
 import model.Vehicule;
 import model.enums.TypeBoite;
 import model.enums.TypeCarburant;
@@ -52,8 +54,8 @@ public class VehiculeDAO {
 	 * @throws SQLException
 	 */
 	public Vehicule getVehicule(String matricule) throws SQLException {
-		PreparedStatement stmt = instance.getConnection()
-				.prepareStatement("select * from Vehicule where matricule=?;");
+		PreparedStatement stmt = instance.getConnection().prepareStatement(
+				"select * from Vehicule natural left outer join Agence natural left join Adresse where matricule=?;");
 		stmt.setString(1, matricule);
 
 		ResultSet rs = stmt.executeQuery();
@@ -63,6 +65,15 @@ public class VehiculeDAO {
 					rs.getBigDecimal("kilometrage"), TypeBoite.get(rs.getString("type_boite")),
 					TypeCarburant.get(rs.getString("type_carburant")), rs.getBoolean("climatisation"),
 					TypeCategorie.get(rs.getString("categorie")));
+
+			// set agence of vehicle if id_agence is not null
+			int idAgence = rs.getInt("id_agence");
+			if (!rs.wasNull()) {
+				vehicule.setAgence(new Agence(idAgence, rs.getString("nom"), rs.getString("telephone"),
+						rs.getString("geolocalisation"), rs.getInt("occupation"), rs.getInt("capacite"),
+						new Adresse(rs.getString("rue"), rs.getString("ville"), rs.getString("CP"))));
+			}
+
 		}
 
 		rs.close();
@@ -78,8 +89,8 @@ public class VehiculeDAO {
 	 */
 	public void addVehicule(Vehicule voiture) throws SQLException {
 		// insertion vehicule
-		PreparedStatement stmtVehicule = instance.getConnection()
-				.prepareStatement("insert into Vehicule(matricule,marque,modele,kilometrage,type_boite,type_carburant,climatisation,categorie) values(?,?,?,?,?,?,?,?);");
+		PreparedStatement stmtVehicule = instance.getConnection().prepareStatement(
+				"insert into Vehicule(matricule,marque,modele,kilometrage,type_boite,type_carburant,climatisation,categorie) values(?,?,?,?,?,?,?,?);");
 		stmtVehicule.setString(1, voiture.getMatricule());
 		stmtVehicule.setString(2, voiture.getMarque());
 		stmtVehicule.setString(3, voiture.getModele());
@@ -91,7 +102,7 @@ public class VehiculeDAO {
 		stmtVehicule.executeUpdate();
 		stmtVehicule.close();
 	}
-	
+
 	/**
 	 * Ajouter un véhicule dans la base de données
 	 * 
@@ -114,9 +125,10 @@ public class VehiculeDAO {
 		stmtVehicule.executeUpdate();
 		stmtVehicule.close();
 	}
-	
+
 	/**
 	 * Retirer un véhicule de la base de données
+	 * 
 	 * @param matricule matricule du véhicule
 	 * @throws SQLException
 	 */

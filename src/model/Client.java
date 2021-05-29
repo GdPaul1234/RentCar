@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,11 +15,7 @@ public class Client extends Personne {
 			) {
 		super(nom, prenom, email, telephone, adresse);
 	}
-	
-	public boolean isSouscriptionValid() {
-		return getExpirationDate().after(Calendar.getInstance().getTime());
-		
-	}
+
 	
 	public void addSouscription(ProgrammeFidelite fidelite) {
 		// get current date
@@ -41,12 +36,6 @@ public class Client extends Personne {
 	
 	public ProgrammeFidelite getProgrammeFidelite() {
 		return prgmFidelite;
-	}
-	
-	public Date getExpirationDate() {
-		Date expirationDate = new Date();
-		expirationDate.setTime(dateSouscription.getTime() + prgmFidelite.getDuree().getTime());
-		return expirationDate;
 	}
 	
 	public List<Devis> getDevis() {

@@ -32,6 +32,9 @@ import view.component.WaitingDialog;
 public class RessourceEditorView extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 5943840322040278648L;
 
+	private JButton actualiserButton = new JButton("🔃 Act.");
+	private JButton searchQueryButton = new JButton("🔍 Rech.");
+
 	private JButton addButton = new JButton("➕ Ajout.");
 	private JButton editButton = new JButton("📝 Editer");
 	private JButton delButton = new JButton("➖ Suppr.");
@@ -67,7 +70,7 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 				VehiculeDAO vehiculeDAO = new VehiculeDAO();
 				List<Vehicule> vehicules = vehiculeDAO.getVehiculeList();
 				return vehicules;
-				
+
 			case "Agence":
 				AgenceDAO agenceDAO = new AgenceDAO();
 				List<Agence> agences = agenceDAO.getAgenceList();
@@ -83,34 +86,30 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		@Override
 		protected void done() {
 			try {
-				// Lancer l'animation d'attente
-				WaitingDialog waiting = new WaitingDialog(frame);
 
 				System.out.println("Finishing refresh table data");
 				ressourceSelector.refreshTable((List<TabularObjectBuilder>) get());
-				
+
 				// setting and changing column widths
-				switch(typeRessource) {
+				switch (typeRessource) {
 				case "Client":
 					ressourceSelector.resizeColumns(Client.getColumnsWidth());
 					break;
-					
+
 				case "Vehicule":
 					ressourceSelector.resizeColumns(Vehicule.getColumnsWidth());
 					break;
-					
+
 				case "Agence":
 					ressourceSelector.resizeColumns(Agence.getColumnsWidth());
 					break;
 				default:
 				}
-				
+
 				// hide column clientID
 				if (typeRessource.equals("Client") || typeRessource.equals("Agence"))
 					ressourceSelector.hideFirstColumn();
-				
-				// close waiting dialog
-				waiting.close();
+
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -140,6 +139,24 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		Object ressourceID = ressourceSelector.getSelectedRessourceID();
 
 		switch (action) {
+		case "search":
+			switch (typeRessource) {
+			case "Client":
+
+				break;
+
+			case "Vehicule":
+
+				break;
+			default:
+				break;
+			}
+			break;
+
+		case "refresh":
+			new RefreshTask().execute();
+			break;
+
 		case "add":
 			switch (typeRessource) {
 			case "Client":
@@ -228,11 +245,11 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 
 				{
 					searchTextField = new JTextField();
-					searchTextField.setToolTipText("");
 					searchToolBar.add(searchTextField);
 					searchTextField.setColumns(10);
 
-					JButton searchQueryButton = new JButton("🔍 Rech.");
+					searchQueryButton.setActionCommand("search");
+					searchQueryButton.addActionListener(this);
 					searchToolBar.add(searchQueryButton);
 
 				}
@@ -245,6 +262,14 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 
 					JComboBox<?> comboBox = new JComboBox<Object>();
 					searchToolBar.add(comboBox);
+				}
+
+				searchToolBar.addSeparator();
+
+				{
+					actualiserButton.setActionCommand("refresh");
+					actualiserButton.addActionListener(this);
+					searchToolBar.add(actualiserButton);
 				}
 
 				searchToolBar.addSeparator(new Dimension(25, 20));
@@ -261,7 +286,7 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		}
 
 		/* Container pour les actions sur les ressources */
-		{
+		if (!typeRessource.equals("Agence")) {
 			JToolBar actionToolBar = new JToolBar();
 			actionToolBar.setFloatable(false);
 

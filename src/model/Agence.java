@@ -109,7 +109,7 @@ public class Agence extends TabularObjectBuilder {
 	
 	public static List<Integer> getColumnsWidth() {
 		List<Integer> result = new ArrayList<>();
-		result.addAll(List.of(0, 250, 150, 50, 50, 100));
+		result.addAll(List.of(0, 250, 200, 50, 50, 100));
 		result.addAll(Adresse.getColumnsWidth());
 		return result;
 	}

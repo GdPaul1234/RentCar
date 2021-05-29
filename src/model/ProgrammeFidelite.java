@@ -1,16 +1,14 @@
 package model;
 
-import java.sql.Time;
-
 public class ProgrammeFidelite {
 
 	private int fideliteID;
 	private String description;
-	private Time duree;
+	private int duree;
 	private float prix;
 	private float reduction;
 
-	public ProgrammeFidelite(int fideliteID, String description, Time duree, float prix, float reduction) {
+	public ProgrammeFidelite(int fideliteID, String description, int duree, float prix, float reduction) {
 		this.fideliteID = fideliteID;
 		this.description = description;
 		this.duree = duree;
@@ -28,7 +26,7 @@ public class ProgrammeFidelite {
 		return description;
 	}
 	
-	public Time getDuree() {
+	public int getDuree() {
 		return duree;
 	}
 

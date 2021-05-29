@@ -17,6 +17,7 @@ public class Vehicule extends TabularObjectBuilder {
 	private TypeCarburant typeCarburant;
 	private boolean climatisation;
 	private TypeCategorie categorie;
+	private Agence agence;
 
 	public Vehicule(String matricule, String marque, String modele, BigDecimal kilometrage, TypeBoite typeBoite,
 			TypeCarburant typeCarburant, boolean climatisation, TypeCategorie categorie) {
@@ -28,6 +29,15 @@ public class Vehicule extends TabularObjectBuilder {
 		this.typeCarburant = typeCarburant;
 		this.climatisation = climatisation;
 		this.categorie = categorie;
+	}
+
+	// TODO copie défensive
+	public void setAgence(Agence agence) {
+		this.agence = agence;
+	}
+
+	public Agence getAgence() {
+		return agence;
 	}
 
 	/* Getters */
@@ -81,9 +91,9 @@ public class Vehicule extends TabularObjectBuilder {
 				"catégorie" };
 		return header;
 	}
-	
+
 	public static List<Integer> getColumnsWidth() {
-		return List.of(50, 75, 100, 50, 75, 75, 20, 75);
+		return List.of(60, 75, 100, 50, 75, 75, 20, 75);
 	}
 
 }

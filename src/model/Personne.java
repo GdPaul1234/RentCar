@@ -77,7 +77,7 @@ public abstract class Personne extends TabularObjectBuilder {
 
 	public static List<Integer> getColumnsWidth() {
 		List<Integer> result = new ArrayList<>();
-		result.addAll(List.of(0, 100, 100, 225, 150));
+		result.addAll(List.of(0, 100, 100, 225, 200));
 		result.addAll(Adresse.getColumnsWidth());
 		return result;
 	}

@@ -12,6 +12,7 @@ import javax.swing.UIManager;
 import model.Client;
 import java.awt.Dimension;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.awt.BorderLayout;
 
 public class ClientViewer extends JPanel {
@@ -30,54 +31,33 @@ public class ClientViewer extends JPanel {
 		{
 			clientPanel.add(Box.createGlue());
 			
-			Box infoPersoPanel = Box.createHorizontalBox();
-			infoPersoPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-			clientPanel.add(infoPersoPanel);
-			{
-				JLabel nomLabel = new JLabel(client.getNom() + ", " + client.getPrenom());
-				infoPersoPanel.add(nomLabel);
-			}
-			
+			JLabel nomLabel = new JLabel(client.getNom() + ", " + client.getPrenom());
+			nomLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			clientPanel.add(nomLabel);
+
 			clientPanel.add(Box.createGlue());
 
 			Box contactPanel = Box.createVerticalBox();
+			contactPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			clientPanel.add(contactPanel);
 			{
 				JLabel emailLabel = new JLabel(client.getEmail());
+				emailLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 				emailLabel.setFont(UIManager.getFont("Viewport.font"));
 				contactPanel.add(emailLabel);
 
 				JLabel telLabel = new JLabel(client.getTelephone());
+				telLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 				telLabel.setFont(UIManager.getFont("Viewport.font"));
 				contactPanel.add(telLabel);
 			}
-			
+
 			clientPanel.add(Box.createGlue());
 
-			Box adressePanel = Box.createVerticalBox();
+			AdresseViewer adressePanel = new AdresseViewer(client.getAdresse());
+			adressePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			clientPanel.add(adressePanel);
-			{
-				JLabel rueLabel = new JLabel(client.getAdresse().getRue());
-				rueLabel.setFont(UIManager.getFont("Viewport.font"));
-				adressePanel.add(rueLabel);
 
-				Box villePanel = Box.createHorizontalBox();
-				villePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-				adressePanel.add(villePanel);
-				{
-					JLabel cpLabel = new JLabel(client.getAdresse().getCodePostal());
-					cpLabel.setFont(UIManager.getFont("Viewport.font"));
-					villePanel.add(cpLabel);
-
-					Component rigidArea = Box.createRigidArea(new Dimension(15, 15));
-					villePanel.add(rigidArea);
-
-					JLabel villeLabel = new JLabel(client.getAdresse().getVille());
-					villeLabel.setFont(UIManager.getFont("Viewport.font"));
-					villePanel.add(villeLabel);
-				}
-			}
-			
 			clientPanel.add(Box.createGlue());
 		}
 
@@ -87,37 +67,36 @@ public class ClientViewer extends JPanel {
 		add(fidelitePanel, BorderLayout.SOUTH);
 		if (client.getProgrammeFidelite() != null) {
 			fidelitePanel.add(Box.createGlue());
-			
+
 			JLabel descLabel = new JLabel(client.getProgrammeFidelite().getDescription());
 			descLabel.setFont(UIManager.getFont("Viewport.font"));
 			fidelitePanel.add(descLabel);
 
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/YYYY");
-			
+
 			fidelitePanel.add(Box.createGlue());
-			
+
 			JLabel expirationLabel = new JLabel(String.format("<html><strong>Expire le :</strong> %s</html>",
-					dateFormatter.format(client.getExpirationDate())));
+					dateFormatter.format(Calendar.getInstance().getTime())));
 			expirationLabel.setFont(UIManager.getFont("Viewport.font"));
 			fidelitePanel.add(expirationLabel);
-			
+
 			fidelitePanel.add(Box.createGlue());
 
 			JLabel prixLabel = new JLabel(String.format("<html><strong>Prix : </strong><em>%.2f €</em></html>",
 					client.getProgrammeFidelite().getPrix()));
 			prixLabel.setFont(UIManager.getFont("Viewport.font"));
 			fidelitePanel.add(prixLabel);
-			
+
 			fidelitePanel.add(Box.createGlue());
 
 			JLabel reductionLabel = new JLabel(
-					String.format("<html>Offre une réduction de <em>%.0f %%</em> sur les locations</html>",
+					String.format("<html>Offre une réduction de <em>%.0f %%</em><br>sur les locations</html>",
 							100 * client.getProgrammeFidelite().getReduction()));
 			reductionLabel.setFont(UIManager.getFont("Viewport.font"));
 			fidelitePanel.add(reductionLabel);
-			
-			Component glue_4 = Box.createGlue();
-			fidelitePanel.add(glue_4);
+
+			fidelitePanel.add(Box.createGlue());
 		} else {
 			JLabel emptyLabel = new JLabel("<html>Aucun programme de fidélité</html>");
 			emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

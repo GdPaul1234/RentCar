@@ -12,12 +12,12 @@ import model.Client;
 
 /**
  * Client Database Access Object
+ * 
  * @author Paul
  *
  */
 public class ClientDAO {
 	private DataAccess instance;
-
 
 	public ClientDAO() {
 		// obtenir les accès à la BDD
@@ -26,6 +26,7 @@ public class ClientDAO {
 
 	/**
 	 * Obtenir la liste de tous les clients
+	 * 
 	 * @return liste des clients
 	 * @throws SQLException
 	 */
@@ -50,6 +51,7 @@ public class ClientDAO {
 
 	/**
 	 * Obtenir les informations sur un client
+	 * 
 	 * @param clientID ID du client
 	 * @return client
 	 * @throws SQLException
@@ -73,31 +75,47 @@ public class ClientDAO {
 	}
 
 	/**
-	 * Ajouter un client dans la base de données
-	 * @param client Client à ajouter
+	 * Insérer une adresse
+	 * 
+	 * @param adresse adresse à ajouter
 	 * @throws SQLException
 	 */
-	public void addClient(Client client) throws SQLException {
-		// insertion adressse si inexistante
+	public void insertAdresse(Adresse adresse) throws SQLException {
+		PreparedStatement stmtAdresse = instance.getConnection()
+				.prepareStatement("insert into Adresse(rue,ville,CP) values(?,?,?)");
+		stmtAdresse.setString(1, adresse.getRue());
+		stmtAdresse.setString(2, adresse.getVille());
+		stmtAdresse.setString(3, adresse.getCodePostal());
+		stmtAdresse.executeUpdate();
+		stmtAdresse.close();
+	}
+
+	public boolean isAdresseExistante(Adresse adresse) throws SQLException {
 		PreparedStatement stmtAdresse = instance.getConnection()
 				.prepareStatement("select count(*) as count from Adresse where rue=? AND ville=? AND cp=?;");
-		stmtAdresse.setString(1, client.getAdresse().getRue());
-		stmtAdresse.setString(2, client.getAdresse().getVille());
-		stmtAdresse.setString(3, client.getAdresse().getCodePostal());
+		stmtAdresse.setString(1, adresse.getRue());
+		stmtAdresse.setString(2, adresse.getVille());
+		stmtAdresse.setString(3, adresse.getCodePostal());
 
 		ResultSet rset = stmtAdresse.executeQuery();
 		rset.next();
 		int nbSameAdresse = rset.getInt("count");
 		rset.close();
 		stmtAdresse.close();
+		return nbSameAdresse == 0;
+	}
 
-		if (nbSameAdresse == 0) {
-			stmtAdresse = instance.getConnection().prepareStatement("insert into Adresse(rue,ville,CP) values(?,?,?)");
-			stmtAdresse.setString(1, client.getAdresse().getRue());
-			stmtAdresse.setString(2, client.getAdresse().getVille());
-			stmtAdresse.setString(3, client.getAdresse().getCodePostal());
-			stmtAdresse.executeUpdate();
-			stmtAdresse.close();
+	/**
+	 * Ajouter un client dans la base de données
+	 * 
+	 * @param client Client à ajouter
+	 * @throws SQLException
+	 */
+	public void addClient(Client client) throws SQLException {
+		// insertion adressse si inexistante
+		Adresse clientAdress = client.getAdresse();
+		if (isAdresseExistante(clientAdress)) {
+			insertAdresse(clientAdress);
 		}
 
 		// insertion client
@@ -112,10 +130,16 @@ public class ClientDAO {
 		stmtClient.executeUpdate();
 		stmtClient.close();
 	}
-	
+
 	public void editClient(int clientID, Client client) throws SQLException {
-		PreparedStatement stmtClient = instance.getConnection()
-				.prepareStatement("update Client set nom=?, prenom=?, email=?, telephone=?, rue=?, ville=? where pers_id=?;");
+		// insertion adressse si inexistante
+		Adresse clientAdress = client.getAdresse();
+		if (isAdresseExistante(clientAdress)) {
+			insertAdresse(clientAdress);
+		}
+
+		PreparedStatement stmtClient = instance.getConnection().prepareStatement(
+				"update Client set nom=?, prenom=?, email=?, telephone=?, rue=?, ville=? where pers_id=?;");
 		stmtClient.setString(1, client.getNom());
 		stmtClient.setString(2, client.getPrenom());
 		stmtClient.setString(3, client.getEmail());
@@ -129,12 +153,12 @@ public class ClientDAO {
 
 	/**
 	 * Retirer un client de la base de données
+	 * 
 	 * @param clientID
 	 * @throws SQLException
 	 */
 	public void removeClient(int clientID) throws SQLException {
-		PreparedStatement stmtClient = instance.getConnection()
-				.prepareStatement("delete from Client where pers_id=?;");
+		PreparedStatement stmtClient = instance.getConnection().prepareStatement("delete from Client where pers_id=?;");
 		stmtClient.setInt(1, clientID);
 		stmtClient.executeUpdate();
 		stmtClient.close();

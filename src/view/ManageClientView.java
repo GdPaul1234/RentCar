@@ -1,8 +1,8 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
-import java.sql.Time;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -30,8 +30,7 @@ public class ManageClientView extends JDialog {
 			// test
 			Client client = new Client("Nom", "Prenom", "nom.prenom@mail.com", "+33 (0) 1 23 45 67 89",
 					new Adresse("9, rue de la Paix", "Paris", "75001"));
-			client.addSouscription(new ProgrammeFidelite(0, "Test description prgm fidélité",
-					new Time(2 * 365 * 24 * 3600), 35.50f, 0.25f));
+			client.addSouscription(new ProgrammeFidelite(0, "Test description prgm fidélité", 50, 35.50f, 0.25f));
 
 			ManageClientView dialog = new ManageClientView(client);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -39,6 +38,13 @@ public class ManageClientView extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void run(Component frame) {
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(frame);
+		setModal(true);
+		setVisible(true);
 	}
 
 	/**
@@ -58,7 +64,7 @@ public class ManageClientView extends JDialog {
 				JPanel gestionLocationPanel = new JPanel();
 				gestionLocationPanel.setBorder(BorderFactory.createTitledBorder("Locations"));
 				GridBagLayout gbl_gestionLocationPanel = new GridBagLayout();
-				gbl_gestionLocationPanel.columnWidths = new int[] { 140, 140 };
+				gbl_gestionLocationPanel.columnWidths = new int[] { 140, 120 };
 				gbl_gestionLocationPanel.columnWeights = new double[] { 0.0, 0.0 };
 				gbl_gestionLocationPanel.rowWeights = new double[] { 0.0, 0.0, 0.0 };
 				gestionLocationPanel.setLayout(gbl_gestionLocationPanel);
@@ -125,7 +131,7 @@ public class ManageClientView extends JDialog {
 				JPanel gestionFidelite = new JPanel();
 				gestionFidelite.setBorder(BorderFactory.createTitledBorder("Fidélité"));
 				GridBagLayout gbl_gestionFidelite = new GridBagLayout();
-				gbl_gestionFidelite.columnWidths = new int[] { 140, 140 };
+				gbl_gestionFidelite.columnWidths = new int[] { 140, 120 };
 				gbl_gestionFidelite.columnWeights = new double[] { 0.0, 0.0 };
 				gbl_gestionFidelite.rowWeights = new double[] { 0.0 };
 				gestionFidelite.setLayout(gbl_gestionFidelite);
@@ -142,7 +148,8 @@ public class ManageClientView extends JDialog {
 					}
 
 					{
-						JLabel souscriptionLabel = new JLabel("<html><center>Inscription,<br>Renouvellement</center></html>");
+						JLabel souscriptionLabel = new JLabel(
+								"<html><center>Inscription,<br>Renouvellement</center></html>");
 						souscriptionLabel.setFont(UIManager.getFont("Viewport.font"));
 						GridBagConstraints gbc_souscriptionLabel = new GridBagConstraints();
 						gbc_souscriptionLabel.insets = new Insets(0, 0, 0, 5);
@@ -155,7 +162,7 @@ public class ManageClientView extends JDialog {
 
 			}
 		}
-		
+
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -174,7 +181,7 @@ public class ManageClientView extends JDialog {
 		}
 
 		pack();
-		
+
 	}
 
 }
