@@ -41,7 +41,7 @@ import view.component.WaitingDialog;
 public class EditClientView extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -7859216121456496255L;
 	private final JPanel contentPane = new JPanel();
-	private static int textFieldWidth = 18;
+	private static final int textFieldWidth = 18;
 	private int clientID = -1;
 
 	private JTextField nomTextField = new JTextField();

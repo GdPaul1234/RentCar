@@ -19,8 +19,10 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
 
+import controller.AgenceDAO;
 import controller.ClientDAO;
 import controller.VehiculeDAO;
+import model.Agence;
 import model.Client;
 import model.Vehicule;
 import model.interfaces.TabularObjectBuilder;
@@ -36,9 +38,8 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 	private JTextField searchTextField;
 	private RessourceSelector ressourceSelector;
 
-	private WaitingDialog waiting;
 	private String typeRessource;
-
+	private JPanel frame = this;
 
 	/**
 	 * Create the panel.
@@ -66,6 +67,11 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 				VehiculeDAO vehiculeDAO = new VehiculeDAO();
 				List<Vehicule> vehicules = vehiculeDAO.getVehiculeList();
 				return vehicules;
+				
+			case "Agence":
+				AgenceDAO agenceDAO = new AgenceDAO();
+				List<Agence> agences = agenceDAO.getAgenceList();
+				return agences;
 
 			default:
 			}
@@ -77,16 +83,18 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		@Override
 		protected void done() {
 			try {
+				// Lancer l'animation d'attente
+				WaitingDialog waiting = new WaitingDialog(frame);
+
 				System.out.println("Finishing refresh table data");
 				ressourceSelector.refreshTable((List<TabularObjectBuilder>) get());
 
 				// hide column clientID
-				if (typeRessource.equals("Client"))
+				if (typeRessource.equals("Client") || typeRessource.equals("Agence"))
 					ressourceSelector.hideFirstColumn();
 
-				// close waiting dialog if exists
-				if (waiting != null)
-					waiting.close();
+				// close waiting dialog
+				waiting.close();
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -101,6 +109,8 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		case "Vehicule":
 			return Vehicule.getHeader();
 
+		case "Agence":
+			return Agence.getHeader();
 		default:
 		}
 
@@ -112,80 +122,78 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		String action = e.getActionCommand();
 
 		Object ressourceID = ressourceSelector.getSelectedRessourceID();
-		if (ressourceID != null) {
-			// Lancer l'animation d'attente
-			waiting = new WaitingDialog(this);
 
-			switch (action) {
-			case "add":
-				switch (typeRessource) {
-				case "Client":
-					new EditClientView().run(this).thenRun(() -> new RefreshTask().execute());
-					break;
-
-				case "Vehicule":
-					new EditVehicleView().run(this).thenRun(() -> new RefreshTask().execute());
-					break;
-
-				default:
-				}
+		switch (action) {
+		case "add":
+			switch (typeRessource) {
+			case "Client":
+				new EditClientView().run(frame).thenRun(() -> new RefreshTask().execute());
 				break;
 
-			case "edit":
-				if (ressourceID != null) {
+			case "Vehicule":
+				new EditVehicleView().run(frame).thenRun(() -> new RefreshTask().execute());
+				break;
+
+			default:
+			}
+			break;
+
+		case "edit":
+			if (ressourceID != null) {
+				try {
+					switch (typeRessource) {
+					case "Client":
+						new EditClientView((int) ressourceID).run(frame).thenRun(() -> new RefreshTask().execute());
+						break;
+
+					case "Vehicule":
+						new EditVehicleView((String) ressourceID).run(frame).thenRun(() -> new RefreshTask().execute());
+						break;
+
+					default:
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(frame, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+				}
+				break;
+			}
+
+		case "del":
+			if (ressourceID != null) {
+				int choix = JOptionPane.showConfirmDialog(frame, "Voulez-vous supprimer cet élément ?", "",
+						JOptionPane.YES_NO_OPTION);
+
+				if (choix == JOptionPane.YES_OPTION) {
 					try {
+						// Lancer l'animation d'attente
+						WaitingDialog waiting = new WaitingDialog(frame);
+
 						switch (typeRessource) {
 						case "Client":
-							new EditClientView((int) ressourceID).run(this).thenRun(() -> new RefreshTask().execute());
+							new ClientDAO().removeClient((int) ressourceID);
 							break;
 
 						case "Vehicule":
-							new EditVehicleView((String) ressourceID).run(this)
-									.thenRun(() -> new RefreshTask().execute());
+							new VehiculeDAO().removeVehicule((String) ressourceID);
 							break;
 
 						default:
 						}
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(this, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+
+						// refresh la table et arrêter l'animation
+						new RefreshTask().execute();
+						waiting.close();
+					} catch (SQLException e2) {
+						e2.printStackTrace();
+						JOptionPane.showMessageDialog(this, e2.getMessage(), "", JOptionPane.ERROR_MESSAGE);
 					}
-					break;
 				}
 
-			case "del":
-				if (ressourceID != null) {
-					int choix = JOptionPane.showConfirmDialog(this, "Voulez-vous supprimer cet élément ?", "",
-							JOptionPane.YES_NO_OPTION);
-
-					if (choix == JOptionPane.YES_OPTION) {
-						try {
-							switch (typeRessource) {
-							case "Client":
-								new ClientDAO().removeClient((int) ressourceID);
-								break;
-
-							case "Vehicule":
-								new VehiculeDAO().removeVehicule((String) ressourceID);
-								break;
-
-							default:
-							}
-
-							// refresh la table et arrêter l'animation
-							new RefreshTask().execute();
-							waiting.close();
-						} catch (SQLException e2) {
-							e2.printStackTrace();
-							JOptionPane.showMessageDialog(this, e2.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-						}
-					}
-
-					break;
-				}
-
-			default:
+				break;
 			}
+
+		default:
 		}
 
 	}

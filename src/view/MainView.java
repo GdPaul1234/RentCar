@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -38,7 +37,7 @@ public class MainView extends JFrame {
 	 */
 	public MainView() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 640, 480);
 		setTitle("RentCar");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -51,11 +50,11 @@ public class MainView extends JFrame {
 
 		RessourceEditorView clientsView = new RessourceEditorView("Client");
 		RessourceEditorView vehiculesView = new RessourceEditorView("Vehicule");
-		JLabel text3 = new JLabel("Texte 3");
+		RessourceEditorView agenceView = new RessourceEditorView("Agence");
 
 		tabbedPane.addTab("Clients", clientsView);
 		tabbedPane.addTab("Véhicules", vehiculesView);
-		tabbedPane.addTab("Performance", text3);
+		tabbedPane.addTab("Agences", agenceView);
 
 	}
 

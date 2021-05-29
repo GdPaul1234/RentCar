@@ -42,8 +42,8 @@ public class EditVehicleView extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 8614996964673985215L;
 	private final JPanel contentPanel = new JPanel();
-	private static Dimension dimensionSelect = new Dimension(120, 20);
-	private static Dimension dimensionMatricule = new Dimension(75, 20);
+	private static final Dimension dimensionSelect = new Dimension(120, 20);
+	private static final Dimension dimensionMatricule = new Dimension(75, 20);
 
 	private JFormattedTextField matriculeTextField = new JFormattedTextField(
 			EditRessourceUtils.createFormatter("UU'-###'-UU"));
