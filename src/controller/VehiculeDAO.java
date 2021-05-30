@@ -139,4 +139,31 @@ public class VehiculeDAO {
 		stmtVehicule.executeUpdate();
 		stmtVehicule.close();
 	}
+
+	/**
+	 * Rechercher les vehicules par marque
+	 * 
+	 * @param name
+	 * @return liste des vehicules ayant cette marque
+	 * @throws SQLException
+	 */
+	public List<Vehicule> searchVehiculeByMarque(String marque) throws SQLException {
+		PreparedStatement stmtVehicule = instance.getConnection()
+				.prepareStatement("select * from Vehicule where marque like ?");
+		stmtVehicule.setString(1, marque + "%");
+		ResultSet rs = stmtVehicule.executeQuery();
+
+		ArrayList<Vehicule> result = new ArrayList<>(rs.getFetchSize());
+		while (rs.next()) {
+			result.add(new Vehicule(rs.getString("matricule"), rs.getString("marque"), rs.getString("modele"),
+					rs.getBigDecimal("kilometrage"), TypeBoite.get(rs.getString("type_boite")),
+					TypeCarburant.get(rs.getString("type_carburant")), rs.getBoolean("climatisation"),
+					TypeCategorie.get(rs.getString("categorie"))));
+		}
+
+		rs.close();
+		stmtVehicule.close();
+
+		return result;
+	}
 }

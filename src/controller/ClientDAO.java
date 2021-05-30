@@ -74,7 +74,6 @@ public class ClientDAO {
 		return client;
 	}
 
-	
 	private void insertAdresse(Adresse adresse) throws SQLException {
 		PreparedStatement stmtAdresse = instance.getConnection()
 				.prepareStatement("insert into Adresse(rue,ville,CP) values(?,?,?)");
@@ -157,6 +156,33 @@ public class ClientDAO {
 		stmtClient.setInt(1, clientID);
 		stmtClient.executeUpdate();
 		stmtClient.close();
+	}
+
+	/**
+	 * Rechercher les clients par nom
+	 * @param name
+	 * @return liste des clients ayant ce nom
+	 * @throws SQLException
+	 */
+	public List<Client> searchClientByName(String name) throws SQLException {
+		PreparedStatement stmtClient = instance.getConnection()
+				.prepareStatement("select * from Client natural join Adresse where nom like ?");
+		stmtClient.setString(1, name + "%");
+		ResultSet rs = stmtClient.executeQuery();
+
+		ArrayList<Client> result = new ArrayList<>(rs.getFetchSize());
+		while (rs.next()) {
+			Client client = new Client(rs.getString("nom"), rs.getString("prenom"), rs.getString("email"),
+					rs.getString("telephone"),
+					new Adresse(rs.getString("rue"), rs.getString("ville"), rs.getString("CP")));
+			client.setPersonneID(rs.getInt("pers_id"));
+			result.add(client);
+		}
+
+		rs.close();
+		stmtClient.close();
+
+		return result;
 	}
 
 }

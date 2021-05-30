@@ -2,7 +2,6 @@ package view.component.viewer;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -64,8 +63,8 @@ public class ClientViewer extends JPanel {
 		fidelitePanel.setBorder(BorderFactory.createTitledBorder("Programme Fidelité"));
 		add(fidelitePanel, BorderLayout.SOUTH);
 		if (client.getProgrammeFidelite() != null) {
-			ProgrammeFideliteViewer fidBox = new ProgrammeFideliteViewer(client.getProgrammeFidelite(),
-					Calendar.getInstance().getTime());
+			ProgrammeFideliteViewer fidBox = new ProgrammeFideliteViewer(client.getProgrammeFidelite());
+			fidBox.setExpirationDate(client.getDateExpiration());
 			fidelitePanel.add(fidBox);
 		} else {
 			JLabel emptyLabel = new JLabel("<html>Aucun programme de fidélité</html>");

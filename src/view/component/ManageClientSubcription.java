@@ -1,9 +1,9 @@
-package view;
+package view.component;
 
 import java.awt.Component;
-import java.awt.EventQueue;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JOptionPane;
@@ -14,25 +14,23 @@ import model.ProgrammeFidelite;
 
 public class ManageClientSubcription {
 	private Component frame;
-
-	public static void main(String arg[]) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					new ManageClientSubcription(null, 1);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
-	}
+	private int clientID;
+	private Integer fideliteID;
 
 	public ManageClientSubcription(Component frame, int clientID) {
+		this.clientID = clientID;
 		this.frame = frame;
-		new ManageSubcriptionTask().execute();
+	}
 
+	/**
+	 * Launch the application
+	 * 
+	 */
+	public CompletableFuture<Void> run() {
+		CompletableFuture<Void> task = CompletableFuture.runAsync(new ManageSubcriptionTask())
+				.thenRun(new ApplySubcription(fideliteID));
+		task.complete(null);
+		return task;
 	}
 
 	class ManageSubcriptionTask extends SwingWorker<List<ProgrammeFidelite>, Void> {
@@ -58,9 +56,13 @@ public class ManageClientSubcription {
 				List<ProgrammeFidelite> prgmFideliteList = get();
 
 				if (prgmFideliteList != null && prgmFideliteList.size() > 0) {
-					JOptionPane.showInputDialog(frame, "Choisir programme fidélité", "", JOptionPane.QUESTION_MESSAGE,
-							null, prgmFideliteList.toArray(), prgmFideliteList.get(0));
+					ProgrammeFidelite response = (ProgrammeFidelite) JOptionPane.showInputDialog(frame,
+							"Choisir programme fidélité", "", JOptionPane.QUESTION_MESSAGE, null,
+							prgmFideliteList.toArray(), prgmFideliteList.get(0));
 
+					synchronized (fideliteID) {
+						fideliteID = response.getFideliteID();
+					}
 				}
 
 			} catch (InterruptedException | ExecutionException e) {
@@ -68,6 +70,23 @@ public class ManageClientSubcription {
 			}
 
 		}
+	}
+
+	class ApplySubcription extends SwingWorker<Void, Void> {
+		private int fideliteID;
+
+		public ApplySubcription(int fideliteID) {
+			this.fideliteID = fideliteID;
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			// Apply client subcription in DB
+			SouscriptionDAO souscriptionDAO = new SouscriptionDAO();
+			souscriptionDAO.subcribeClientToProgrammeFidelite(clientID, fideliteID);
+			return null;
+		}
+
 	}
 
 }

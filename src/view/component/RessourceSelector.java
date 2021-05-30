@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -28,7 +27,7 @@ import model.Client;
 import model.Vehicule;
 import model.interfaces.TabularObjectBuilder;
 import view.ManageClientView;
-import view.component.viewer.VehicleViewer;
+import view.ManageVehicleView;
 
 public class RessourceSelector extends JPanel {
 	private static final long serialVersionUID = -8933064533708360284L;
@@ -125,7 +124,7 @@ public class RessourceSelector extends JPanel {
 		}
 
 		updateLabel.setText(
-				"Mis à jour le : " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(Calendar.getInstance().getTime()));
+				"Mis à jour le : " + new SimpleDateFormat("dd-MM-yyyy à HH:mm").format(Calendar.getInstance().getTime()));
 
 	}
 
@@ -191,8 +190,7 @@ public class RessourceSelector extends JPanel {
 						break;
 
 					case "Vehicule":
-						JOptionPane.showMessageDialog(frame, new VehicleViewer((Vehicule) ressource), "Information véhicule",
-								JOptionPane.PLAIN_MESSAGE);
+						new ManageVehicleView((Vehicule) ressource).run(frame);
 
 					default:
 					}

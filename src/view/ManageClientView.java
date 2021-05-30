@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,32 +18,23 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import model.Client;
+import view.component.ManageClientSubcription;
 import view.component.viewer.ClientViewer;
 
-public class ManageClientView extends JDialog {
+public class ManageClientView extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 8605274728883691615L;
 
-	/**
-	 * Launch the application.
-	 */
-	/*public static void main(String[] args) {
-		try {
-			// test
-			Client client = new Client("Nom", "Prenom", "nom.prenom@mail.com", "+33 (0) 1 23 45 67 89",
-					new Adresse("9, rue de la Paix", "Paris", "75001"));
-			client.addSouscription(new ProgrammeFidelite(0, "Test description prgm fidélité", 50, 35.50f, 0.25f));
+	private JButton reservationButton = new JButton("Réservation");
+	private JButton locationButton = new JButton("Location");
+	private JButton factureButton = new JButton("Rendue véhicule");
+	private JButton souscriptionButton = new JButton("Souscrire");
 
-			ManageClientView dialog = new ManageClientView(client);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
+	private Client client;
 
 	public void run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(frame);
+		setResizable(false);
 		setModal(true);
 		setVisible(true);
 	}
@@ -50,7 +43,7 @@ public class ManageClientView extends JDialog {
 	 * Create the dialog.
 	 */
 	public ManageClientView(Client client) {
-		setResizable(false);
+		this.client = client;
 
 		getContentPane().setLayout(new BorderLayout());
 		{
@@ -70,7 +63,6 @@ public class ManageClientView extends JDialog {
 				clientManagePanel.add(gestionLocationPanel);
 				{
 					{
-						JButton reservationButton = new JButton("Réservation");
 						GridBagConstraints gbc_reservationButton = new GridBagConstraints();
 						gbc_reservationButton.fill = GridBagConstraints.HORIZONTAL;
 						gbc_reservationButton.insets = new Insets(0, 0, 5, 5);
@@ -89,7 +81,6 @@ public class ManageClientView extends JDialog {
 					}
 
 					{
-						JButton locationButton = new JButton("Location");
 						GridBagConstraints gbc_locationButton = new GridBagConstraints();
 						gbc_locationButton.fill = GridBagConstraints.HORIZONTAL;
 						gbc_locationButton.insets = new Insets(0, 0, 5, 5);
@@ -108,7 +99,6 @@ public class ManageClientView extends JDialog {
 					}
 
 					{
-						JButton factureButton = new JButton("Rendue véhicule");
 						GridBagConstraints gbc_factureButton = new GridBagConstraints();
 						gbc_factureButton.fill = GridBagConstraints.HORIZONTAL;
 						gbc_factureButton.insets = new Insets(0, 0, 0, 5);
@@ -137,7 +127,8 @@ public class ManageClientView extends JDialog {
 				clientManagePanel.add(gestionFidelite);
 				{
 					{
-						JButton souscriptionButton = new JButton("Souscrire");
+						souscriptionButton.setActionCommand("souscrire");
+						souscriptionButton.addActionListener(this);
 						GridBagConstraints gbc_souscriptionButton = new GridBagConstraints();
 						gbc_souscriptionButton.fill = GridBagConstraints.HORIZONTAL;
 						gbc_souscriptionButton.insets = new Insets(0, 0, 0, 5);
@@ -169,17 +160,42 @@ public class ManageClientView extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.setActionCommand("OK");
+				okButton.addActionListener(this);
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.setActionCommand("Cancel");
+				cancelButton.addActionListener(this);
 				buttonPane.add(cancelButton);
 			}
 		}
 
 		pack();
+
+	}
+
+	/**
+	 * Respond to user interaction
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String action = e.getActionCommand();
+
+		switch (action) {
+		case "souscrire":
+			new ManageClientSubcription(this, client.getPersonneID());
+			break;
+
+		case "OK":
+		case "Cancel":
+			dispose();
+			break;
+
+		default:
+			break;
+		}
 
 	}
 

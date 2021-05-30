@@ -116,7 +116,49 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		}
 	}
 
-	public String[] getRessourceSelectorHeader() {
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String action = e.getActionCommand();
+
+		Object ressourceID = ressourceSelector.getSelectedRessourceID();
+
+		switch (action) {
+		case "search":
+			try {
+				searchRessource();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			break;
+
+		case "refresh":
+			new RefreshTask().execute();
+			searchTextField.setText("");
+			break;
+
+		case "add":
+			addRessource();
+			break;
+
+		case "edit":
+			editRessource(ressourceID);
+			break;
+
+		case "del":
+			deleteRessource(ressourceID);
+			break;
+		default:
+		}
+
+	}
+
+	/**
+	 * Get header of ressource type
+	 * 
+	 * @return header of ressource type
+	 */
+	private String[] getRessourceSelectorHeader() {
 		switch (typeRessource) {
 		case "Client":
 			return Client.getHeader();
@@ -132,103 +174,106 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		return null;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String action = e.getActionCommand();
+	/**
+	 * Search Ressource
+	 */
+	private void searchRessource() throws SQLException {
+		switch (typeRessource) {
+		case "Client":
+			List<Client> clientNameList = new ClientDAO().searchClientByName(searchTextField.getText());
+			ressourceSelector.refreshTable(clientNameList);
+			ressourceSelector.resizeColumns(Client.getColumnsWidth());
+			ressourceSelector.hideFirstColumn();
+			break;
 
-		Object ressourceID = ressourceSelector.getSelectedRessourceID();
+		case "Vehicule":
+			List<Vehicule> vehiculeMarqueList = new VehiculeDAO().searchVehiculeByMarque(searchTextField.getText());
+			ressourceSelector.refreshTable(vehiculeMarqueList);
+			ressourceSelector.resizeColumns(Vehicule.getColumnsWidth());
+			break;
+		default:
+			break;
+		}
+	}
 
-		switch (action) {
-		case "search":
-			switch (typeRessource) {
-			case "Client":
+	/**
+	 * Add ressource
+	 */
+	private void addRessource() {
+		switch (typeRessource) {
+		case "Client":
+			new EditClientView().run(frame).thenRun(new RefreshTask());
+			break;
 
-				break;
+		case "Vehicule":
+			new EditVehicleView().run(frame).thenRun(new RefreshTask());
+			break;
 
-			case "Vehicule":
+		default:
+		}
+	}
 
-				break;
-			default:
-				break;
+	/**
+	 * Edit ressource
+	 */
+	private void editRessource(Object ressourceID) {
+		if (ressourceID != null) {
+			try {
+				switch (typeRessource) {
+				case "Client":
+					new EditClientView((int) ressourceID).run(frame).thenRun(new RefreshTask());
+					break;
+
+				case "Vehicule":
+					new EditVehicleView((String) ressourceID).run(frame).thenRun(new RefreshTask());
+					break;
+
+				default:
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(frame, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
 			}
-			break;
+		}
+	}
 
-		case "refresh":
-			new RefreshTask().execute();
-			break;
+	/**
+	 * Delete ressource
+	 * 
+	 * @param ressourceID ressource ID of ressource item to be deleted
+	 */
+	private void deleteRessource(Object ressourceID) {
+		if (ressourceID != null) {
+			int choix = JOptionPane.showConfirmDialog(frame, "Voulez-vous supprimer cet élément ?", "",
+					JOptionPane.YES_NO_OPTION);
 
-		case "add":
-			switch (typeRessource) {
-			case "Client":
-				new EditClientView().run(frame).thenRun(() -> new RefreshTask().execute());
-				break;
-
-			case "Vehicule":
-				new EditVehicleView().run(frame).thenRun(() -> new RefreshTask().execute());
-				break;
-
-			default:
-			}
-			break;
-
-		case "edit":
-			if (ressourceID != null) {
+			if (choix == JOptionPane.YES_OPTION) {
 				try {
+					// Lancer l'animation d'attente
+					WaitingDialog waiting = new WaitingDialog(frame);
+
 					switch (typeRessource) {
 					case "Client":
-						new EditClientView((int) ressourceID).run(frame).thenRun(() -> new RefreshTask().execute());
+						new ClientDAO().removeClient((int) ressourceID);
 						break;
 
 					case "Vehicule":
-						new EditVehicleView((String) ressourceID).run(frame).thenRun(() -> new RefreshTask().execute());
+						new VehiculeDAO().removeVehicule((String) ressourceID);
 						break;
 
 					default:
 					}
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(frame, e1.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+
+					// refresh la table et arrêter l'animation
+					new RefreshTask().execute();
+					waiting.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
 				}
-				break;
 			}
 
-		case "del":
-			if (ressourceID != null) {
-				int choix = JOptionPane.showConfirmDialog(frame, "Voulez-vous supprimer cet élément ?", "",
-						JOptionPane.YES_NO_OPTION);
-
-				if (choix == JOptionPane.YES_OPTION) {
-					try {
-						// Lancer l'animation d'attente
-						WaitingDialog waiting = new WaitingDialog(frame);
-
-						switch (typeRessource) {
-						case "Client":
-							new ClientDAO().removeClient((int) ressourceID);
-							break;
-
-						case "Vehicule":
-							new VehiculeDAO().removeVehicule((String) ressourceID);
-							break;
-
-						default:
-						}
-
-						// refresh la table et arrêter l'animation
-						new RefreshTask().execute();
-						waiting.close();
-					} catch (SQLException e2) {
-						e2.printStackTrace();
-						JOptionPane.showMessageDialog(this, e2.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-					}
-				}
-
-				break;
-			}
-
-		default:
 		}
-
 	}
 
 	/**
@@ -245,8 +290,10 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 
 				{
 					searchTextField = new JTextField();
-					searchToolBar.add(searchTextField);
 					searchTextField.setColumns(10);
+					searchTextField.setActionCommand("search");
+					searchTextField.addActionListener(this);
+					searchToolBar.add(searchTextField);
 
 					searchQueryButton.setActionCommand("search");
 					searchQueryButton.addActionListener(this);

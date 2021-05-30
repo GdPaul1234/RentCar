@@ -19,10 +19,24 @@ public class ProgrammeFideliteViewer extends JPanel {
 
 	private static final long serialVersionUID = -5896799807298529661L;
 
+	private ProgrammeFidelite prgmFidelite;
+	private JLabel expirationLabel;
+
 	/**
 	 * Create the panel.
 	 */
-	public ProgrammeFideliteViewer(ProgrammeFidelite prgmFidelite, Date dateExpiration) {
+	public ProgrammeFideliteViewer(ProgrammeFidelite prgmFidelite) {
+		this.prgmFidelite = prgmFidelite;
+		createUI();
+	}
+
+	public void setExpirationDate(Date dateExpiration) {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/YYYY");
+		expirationLabel.setText("<html><center><strong>Expire le : " + dateFormatter.format(dateExpiration)
+				+ "</strong></center></html>");
+	}
+
+	private void createUI() {
 		setBorder(BorderFactory.createTitledBorder("Programme Fidelité"));
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -42,10 +56,7 @@ public class ProgrammeFideliteViewer extends JPanel {
 			}
 
 			{
-				SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/YYYY");
-
-				JLabel expirationLabel = new JLabel("<html><center><strong>Expire le :</strong>"
-						+ dateFormatter.format(dateExpiration) + "</center></html>");
+				JLabel expirationLabel = new JLabel("<html><center><strong>Expire le : ...</strong></center></html>");
 				expirationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 				expirationLabel.setFont(UIManager.getFont("Viewport.font"));
 				GridBagConstraints gbc_expirationLabel = new GridBagConstraints();
@@ -81,7 +92,6 @@ public class ProgrammeFideliteViewer extends JPanel {
 				add(reductionLabel, gbc_reductionLabel);
 			}
 		}
-
 	}
 
 }
