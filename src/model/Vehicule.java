@@ -1,6 +1,7 @@
 package model;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import model.enums.TypeBoite;
@@ -73,12 +74,7 @@ public class Vehicule extends TabularObjectBuilder {
 		return categorie;
 	}
 
-	@Override
-	public String toString() {
-		return "Vehicule [matricule=" + matricule + ", marque=" + marque + ", modele=" + modele + ", kilometrage="
-				+ kilometrage + ", typeBoite=" + typeBoite + ", typeCarburant=" + typeCarburant + ", climatisation="
-				+ climatisation + ", categorie=" + categorie + "]";
-	}
+	/* Tabular Object Builder */
 
 	@Override
 	public Object[] toArray() {
@@ -94,6 +90,16 @@ public class Vehicule extends TabularObjectBuilder {
 
 	public static List<Integer> getColumnsWidth() {
 		return List.of(60, 75, 100, 50, 75, 75, 20, 75);
+	}
+
+	public static List<String> getFacets() {
+		List<String> facets = TabularObjectBuilder.getFacets();
+		facets.add("En cours de location");
+		facets.addAll(Arrays.asList(Arrays.stream(TypeCategorie.getValues())
+				.map((v) -> v.toString().concat(" disponible")).toArray(String[]::new)));
+
+		return facets;
+
 	}
 
 }

@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -17,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import controller.ClientDAO;
 import model.Client;
 import view.component.ManageClientSubcription;
 import view.component.viewer.ClientViewer;
@@ -28,6 +30,9 @@ public class ManageClientView extends JDialog implements ActionListener {
 	private JButton locationButton = new JButton("Location");
 	private JButton factureButton = new JButton("Rendue véhicule");
 	private JButton souscriptionButton = new JButton("Souscrire");
+
+	private ClientViewer clientViewer;
+	private JDialog dialog = this;
 
 	private Client client;
 
@@ -47,7 +52,7 @@ public class ManageClientView extends JDialog implements ActionListener {
 
 		getContentPane().setLayout(new BorderLayout());
 		{
-			ClientViewer clientViewer = new ClientViewer(client);
+			clientViewer = new ClientViewer(client);
 			getContentPane().add(clientViewer, BorderLayout.EAST);
 
 			Box clientManagePanel = Box.createVerticalBox();
@@ -185,7 +190,17 @@ public class ManageClientView extends JDialog implements ActionListener {
 
 		switch (action) {
 		case "souscrire":
-			new ManageClientSubcription(this, client.getPersonneID());
+			new ManageClientSubcription(this, client.getPersonneID()).run().thenRun(() -> {
+				try {
+					// Update client status
+					client = new ClientDAO().getClient(client.getPersonneID());
+					clientViewer = new ClientViewer(client);
+					dialog.invalidate();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			});
 			break;
 
 		case "OK":

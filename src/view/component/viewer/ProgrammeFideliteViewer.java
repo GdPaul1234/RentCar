@@ -20,7 +20,7 @@ public class ProgrammeFideliteViewer extends JPanel {
 	private static final long serialVersionUID = -5896799807298529661L;
 
 	private ProgrammeFidelite prgmFidelite;
-	private JLabel expirationLabel;
+	private JLabel expirationLabel = new JLabel();
 
 	/**
 	 * Create the panel.
@@ -37,7 +37,6 @@ public class ProgrammeFideliteViewer extends JPanel {
 	}
 
 	private void createUI() {
-		setBorder(BorderFactory.createTitledBorder("Programme Fidelité"));
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[] { Double.MIN_VALUE };
@@ -56,7 +55,6 @@ public class ProgrammeFideliteViewer extends JPanel {
 			}
 
 			{
-				JLabel expirationLabel = new JLabel("<html><center><strong>Expire le : ...</strong></center></html>");
 				expirationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 				expirationLabel.setFont(UIManager.getFont("Viewport.font"));
 				GridBagConstraints gbc_expirationLabel = new GridBagConstraints();

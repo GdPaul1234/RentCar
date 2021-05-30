@@ -15,8 +15,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingWorker;
 
 import controller.AgenceDAO;
@@ -38,7 +40,10 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 	private JButton addButton = new JButton("➕ Ajout.");
 	private JButton editButton = new JButton("📝 Editer");
 	private JButton delButton = new JButton("➖ Suppr.");
-	private JTextField searchTextField;
+
+	private JTextField searchTextField = new JTextField();
+	JSpinner dateSpinner = new JSpinner();
+	private JComboBox<String> facetComboBox;
 	private RessourceSelector ressourceSelector;
 
 	private String typeRessource;
@@ -116,6 +121,10 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		}
 	}
 
+	/***********************************************
+	 * Respond to button interaction
+	 ***********************************************/
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
@@ -130,6 +139,10 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			break;
+			
+		case "filter":
+			filterRessource();
 			break;
 
 		case "refresh":
@@ -191,6 +204,27 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			ressourceSelector.refreshTable(vehiculeMarqueList);
 			ressourceSelector.resizeColumns(Vehicule.getColumnsWidth());
 			break;
+		default:
+			break;
+		}
+	}
+	
+	private void filterRessource() {
+		// get Filter Facets
+		String filterFacet = (String) facetComboBox.getSelectedItem();
+		System.out.println(filterFacet);
+		
+		switch (filterFacet) {
+		case "Tout":
+			dateSpinner.setEnabled(false);
+			// RAZ et refresh table
+			new RefreshTask().execute();
+			break;
+			
+		case "> 80% de sa capacité":
+			dateSpinner.setEnabled(true);
+			break;
+
 		default:
 			break;
 		}
@@ -276,6 +310,7 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		}
 	}
 
+
 	/**
 	 * Create the view.
 	 */
@@ -288,8 +323,7 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			{
 				searchToolBar.addSeparator(new Dimension(25, 20));
 
-				{
-					searchTextField = new JTextField();
+				if (!typeRessource.equals("Agence")) {
 					searchTextField.setColumns(10);
 					searchTextField.setActionCommand("search");
 					searchTextField.addActionListener(this);
@@ -304,11 +338,21 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 				searchToolBar.addSeparator();
 
 				{
-					JLabel lblNewLabel = new JLabel("Filt.");
+					JLabel lblNewLabel = new JLabel("Filtrer: ");
 					searchToolBar.add(lblNewLabel);
 
-					JComboBox<?> comboBox = new JComboBox<Object>();
-					searchToolBar.add(comboBox);
+					facetComboBox = createFacetComboBox();
+					facetComboBox.setActionCommand("filter");
+					facetComboBox.addActionListener(this);
+					facetComboBox.setPreferredSize(new Dimension(125, 30));
+					searchToolBar.add(facetComboBox);
+
+					if (typeRessource.equals("Agence")) {
+						dateSpinner.setModel(new SpinnerDateModel());
+						dateSpinner.setMaximumSize(new Dimension(125, 30));
+						dateSpinner.setEnabled(false);
+						searchToolBar.add(dateSpinner);
+					}
 				}
 
 				searchToolBar.addSeparator();
@@ -360,6 +404,22 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			Component glue_right = Box.createGlue();
 			actionToolBar.add(glue_right);
 		}
+	}
+
+	private JComboBox<String> createFacetComboBox() {
+		switch (typeRessource) {
+		case "Client":
+			return new JComboBox<String>(Client.getFacets().toArray(String[]::new));
+
+		case "Vehicule":
+			return new JComboBox<String>(Vehicule.getFacets().toArray(String[]::new));
+
+		case "Agence":
+			return new JComboBox<String>(Agence.getFacets().toArray(String[]::new));
+		default:
+			break;
+		}
+		return new JComboBox<String>();
 	}
 
 }

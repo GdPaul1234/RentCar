@@ -9,6 +9,7 @@ import java.util.List;
 
 import model.Adresse;
 import model.Client;
+import model.ProgrammeFidelite;
 
 /**
  * Client Database Access Object
@@ -57,8 +58,8 @@ public class ClientDAO {
 	 * @throws SQLException
 	 */
 	public Client getClient(int clientID) throws SQLException {
-		PreparedStatement stmt = instance.getConnection()
-				.prepareStatement("select * from Client natural join Adresse where pers_id=?;");
+		PreparedStatement stmt = instance.getConnection().prepareStatement("select * from Client natural join Adresse"
+				+ " natural left join Souscription natural left join ProgrammeFidelite where pers_id=?;");
 		stmt.setInt(1, clientID);
 
 		ResultSet rs = stmt.executeQuery();
@@ -67,6 +68,12 @@ public class ClientDAO {
 			client = new Client(rs.getString("nom"), rs.getString("prenom"), rs.getString("email"),
 					rs.getString("telephone"),
 					new Adresse(rs.getString("rue"), rs.getString("ville"), rs.getString("CP")));
+			client.setPersonneID(rs.getInt("pers_id"));
+
+			java.sql.Date dateSouscription = rs.getDate("date_souscription");
+			if (!rs.wasNull())
+				client.addSouscription(new ProgrammeFidelite(rs.getInt("fidelite_id"), rs.getString("description"),
+						rs.getInt("duree"), rs.getBigDecimal("prix"), rs.getBigDecimal("reduction")), dateSouscription);
 		}
 
 		rs.close();
@@ -152,6 +159,7 @@ public class ClientDAO {
 	 * @throws SQLException
 	 */
 	public void removeClient(int clientID) throws SQLException {
+		// Asume ON DELETE CASCADE on FOREIGN KEY
 		PreparedStatement stmtClient = instance.getConnection().prepareStatement("delete from Client where pers_id=?;");
 		stmtClient.setInt(1, clientID);
 		stmtClient.executeUpdate();
@@ -160,6 +168,7 @@ public class ClientDAO {
 
 	/**
 	 * Rechercher les clients par nom
+	 * 
 	 * @param name
 	 * @return liste des clients ayant ce nom
 	 * @throws SQLException

@@ -2,15 +2,13 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import model.Vehicule;
 import view.component.viewer.VehicleViewer;
@@ -32,6 +30,7 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 	 * Create the dialog.
 	 */
 	public ManageVehicleView(Vehicule vehicule) {
+		setTitle("Gestion véhicule");
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
 		Box contentPanel = Box.createVerticalBox();
@@ -44,8 +43,8 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 			}
 			{
 				Box gestionVehiculePanel = Box.createVerticalBox();
+				gestionVehiculePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 				gestionVehiculePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-				gestionVehiculePanel.setBorder(BorderFactory.createTitledBorder("Gestion véhicule"));
 				contentPanel.add(gestionVehiculePanel);
 				{
 					JButton clientVehiculeButton = new JButton("Clients ayant loué ce véhicule");
@@ -66,23 +65,6 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 
 				}
 
-			}
-		}
-
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
 			}
 		}
 

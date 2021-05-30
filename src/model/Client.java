@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import model.interfaces.TabularObjectBuilder;
+
 public class Client extends Personne {
 	private java.sql.Date dateSouscription;
 	private ProgrammeFidelite prgmFidelite;
@@ -56,5 +58,17 @@ public class Client extends Personne {
 	public java.sql.Date getDateSouscription() {
 		return dateSouscription;
 	}
+	
+	/* Tabular Object Builder */
+	
+	public static List<String> getFacets() {
+		List<String> facets = TabularObjectBuilder.getFacets();
+		facets.add("Location en cours");
+		facets.add("Aucune location");
+		facets.add("Clients GOLD");
+		return facets;
+		
+	}
+	
 
 }

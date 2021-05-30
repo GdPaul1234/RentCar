@@ -67,6 +67,7 @@ public class Agence extends TabularObjectBuilder {
 	}
 
 	/* Gestion employes */
+
 	public void addEmploye(Employe employe) {
 		employes.add(employe);
 	}
@@ -76,26 +77,29 @@ public class Agence extends TabularObjectBuilder {
 	}
 
 	/* Gestion véhicules */
-	public void addVehicule(Vehicule vehicule) {
-		vehicules.add(vehicule);
+
+	public void addVehicules(List<Vehicule> vehicules) {
+		vehicules.addAll(vehicules);
 	}
 
-	public Vehicule removeVehicule(Vehicule vehicule) {
-		return vehicules.remove(vehicule) ? vehicule : null;
+	public void resetVehiculeList() {
+		vehicules.removeIf((v) -> v.getMatricule() == v.getMatricule());
 	}
+
+	/* Tabular Object Builder */
 
 	@Override
 	public Object[] toArray() {
 		Object[] agArray = { identifiant, nom, telephone, occupation, capacite, geolocalisation };
 		Object[] adArray = adresse.toArray();
-		
+
 		// merge pArray and aArray
 		Object[] array = new Object[agArray.length + adArray.length];
 		System.arraycopy(agArray, 0, array, 0, agArray.length);
 		System.arraycopy(adArray, 0, array, agArray.length, adArray.length);
 		return array;
 	}
-	
+
 	public static String[] getHeader() {
 		String[] agHeader = { "id", "nom", "téléphone", "occupation", "capacite", "géolocalisation" };
 		String[] adHeader = Adresse.getHeader();
@@ -106,12 +110,20 @@ public class Agence extends TabularObjectBuilder {
 		System.arraycopy(adHeader, 0, header, agHeader.length, adHeader.length);
 		return header;
 	}
-	
+
 	public static List<Integer> getColumnsWidth() {
 		List<Integer> result = new ArrayList<>();
 		result.addAll(List.of(0, 250, 200, 50, 50, 100));
 		result.addAll(Adresse.getColumnsWidth());
 		return result;
+	}
+
+	public static List<String> getFacets() {
+		List<String> facets = TabularObjectBuilder.getFacets();
+		facets.add("> 80% de sa capacité");
+
+		return facets;
+
 	}
 
 }

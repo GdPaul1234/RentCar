@@ -52,6 +52,8 @@ public abstract class Personne extends TabularObjectBuilder {
 		this.personneID = personneID;
 	}
 
+	/* Tabular Object Builder */
+	
 	@Override
 	public Object[] toArray() {
 		Object[] pArray = { personneID, nom, prenom, email, telephone };

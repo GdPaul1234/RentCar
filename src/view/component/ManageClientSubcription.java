@@ -13,12 +13,14 @@ import controller.SouscriptionDAO;
 import model.ProgrammeFidelite;
 
 public class ManageClientSubcription {
+	CompletableFuture<Void> task = new CompletableFuture<>();
+
 	private Component frame;
 	private int clientID;
-	private Integer fideliteID;
 
 	public ManageClientSubcription(Component frame, int clientID) {
 		this.clientID = clientID;
+
 		this.frame = frame;
 	}
 
@@ -27,9 +29,8 @@ public class ManageClientSubcription {
 	 * 
 	 */
 	public CompletableFuture<Void> run() {
-		CompletableFuture<Void> task = CompletableFuture.runAsync(new ManageSubcriptionTask())
-				.thenRun(new ApplySubcription(fideliteID));
-		task.complete(null);
+
+		new ManageSubcriptionTask().execute();
 		return task;
 	}
 
@@ -60,9 +61,9 @@ public class ManageClientSubcription {
 							"Choisir programme fidélité", "", JOptionPane.QUESTION_MESSAGE, null,
 							prgmFideliteList.toArray(), prgmFideliteList.get(0));
 
-					synchronized (fideliteID) {
-						fideliteID = response.getFideliteID();
-					}
+					if (response != null)
+						new ApplySubcription(clientID, response.getFideliteID()).execute();
+
 				}
 
 			} catch (InterruptedException | ExecutionException e) {
@@ -73,18 +74,31 @@ public class ManageClientSubcription {
 	}
 
 	class ApplySubcription extends SwingWorker<Void, Void> {
+		private int clientID;
 		private int fideliteID;
 
-		public ApplySubcription(int fideliteID) {
+		public ApplySubcription(int clientID, int fideliteID) {
+			this.clientID = clientID;
 			this.fideliteID = fideliteID;
 		}
 
 		@Override
-		protected Void doInBackground() throws Exception {
-			// Apply client subcription in DB
+		protected Void doInBackground() {
+			System.out.println("Apply client subcription in DB");
 			SouscriptionDAO souscriptionDAO = new SouscriptionDAO();
-			souscriptionDAO.subcribeClientToProgrammeFidelite(clientID, fideliteID);
+			try {
+				System.out.printf("%d, %d", clientID, fideliteID);
+				souscriptionDAO.subcribeClientToProgrammeFidelite(clientID, fideliteID);
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(frame, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}
 			return null;
+		}
+
+		@Override
+		protected void done() {
+			task.complete(null);
 		}
 
 	}
