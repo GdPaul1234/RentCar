@@ -20,6 +20,7 @@ import javax.swing.UIManager;
 
 import controller.ClientDAO;
 import model.Client;
+import view.component.CreateClientReservation;
 import view.component.ManageClientSubcription;
 import view.component.viewer.ClientViewer;
 
@@ -68,6 +69,8 @@ public class ManageClientView extends JDialog implements ActionListener {
 				clientManagePanel.add(gestionLocationPanel);
 				{
 					{
+						reservationButton.setActionCommand("reservation");
+						reservationButton.addActionListener(this);
 						GridBagConstraints gbc_reservationButton = new GridBagConstraints();
 						gbc_reservationButton.fill = GridBagConstraints.HORIZONTAL;
 						gbc_reservationButton.insets = new Insets(0, 0, 5, 5);
@@ -201,6 +204,11 @@ public class ManageClientView extends JDialog implements ActionListener {
 					e1.printStackTrace();
 				}
 			});
+			break;
+
+		case "reservation":
+			new CreateClientReservation(client).run(this);
+
 			break;
 
 		case "OK":

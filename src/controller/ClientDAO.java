@@ -1,5 +1,6 @@
 package controller;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +11,7 @@ import java.util.List;
 import model.Adresse;
 import model.Client;
 import model.ProgrammeFidelite;
+import model.enums.TypeCategorie;
 
 /**
  * Client Database Access Object
@@ -190,6 +192,25 @@ public class ClientDAO {
 
 		rs.close();
 		stmtClient.close();
+
+		return result;
+	}
+
+	public BigDecimal[] getPrixReduction(int clientID, TypeCategorie categorie) throws SQLException {
+		PreparedStatement stmt = instance.getConnection().prepareStatement(
+				"select tarif, ifnull(reduction_active_subcription(?), 0) as reduction from Categorie where categorie=?;");
+		stmt.setInt(1, clientID);
+		stmt.setString(2, categorie.toString());
+		ResultSet rs = stmt.executeQuery();
+
+		BigDecimal[] result = new BigDecimal[2];
+		if (rs.next()) {
+			result[0] = rs.getBigDecimal("tarif");
+			result[1] = rs.getBigDecimal("reduction");
+		}
+
+		rs.close();
+		stmt.close();
 
 		return result;
 	}

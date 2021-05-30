@@ -85,12 +85,11 @@ public class ManageClientSubcription {
 		@Override
 		protected Void doInBackground() {
 			System.out.println("Apply client subcription in DB");
-			SouscriptionDAO souscriptionDAO = new SouscriptionDAO();
 			try {
-				System.out.printf("%d, %d", clientID, fideliteID);
-				souscriptionDAO.subcribeClientToProgrammeFidelite(clientID, fideliteID);
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(frame, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+				new SouscriptionDAO().subcribeClientToProgrammeFidelite(clientID, fideliteID);
+			} catch (
+			SQLException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
