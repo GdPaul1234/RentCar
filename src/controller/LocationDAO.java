@@ -164,4 +164,32 @@ public class LocationDAO {
 
 		return result;
 	}
+
+	public void addLocation(int clientID, Date dateDebut, String matricule) throws SQLException {
+		instance.getConnection().setAutoCommit(false);
+
+		// L'agence de départ perd un véhicule
+		PreparedStatement stmt = instance.getConnection().prepareStatement(
+				"update Agence set occupation = occupation-1 where id_agence=(select id_agence from Vehicule where matricule=?);");
+		stmt.setString(1, matricule);
+		stmt.executeUpdate();
+
+		// Preter le véhicule au client
+		stmt = instance.getConnection().prepareStatement("update Vehicule set id_agence=? where matricule=?;");
+		stmt.setNull(1, java.sql.Types.INTEGER);
+		stmt.setString(2, matricule);
+		stmt.executeUpdate();
+
+		// ajouter la location
+		stmt = instance.getConnection()
+				.prepareStatement("insert into Location(matricule, pers_id, debut_location) values (?,?,?)");
+		stmt.setString(1, matricule);
+		stmt.setInt(2, clientID);
+		stmt.setDate(3, dateDebut);
+		stmt.executeUpdate();
+
+		instance.getConnection().commit();
+
+		instance.getConnection().setAutoCommit(true);
+	}
 }

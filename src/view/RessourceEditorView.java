@@ -251,6 +251,18 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			}
 			break;
 
+		case "Clients GOLD":
+			try {
+				List<Client> clientsGOLD = new LocationDAO().getClientGoldList();
+				// refresh table
+				ressourceSelector.refreshTable(clientsGOLD);
+				ressourceSelector.resizeColumns(Client.getColumnsWidth());
+				ressourceSelector.hideFirstColumn();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			break;
+
 		/**
 		 * Voitures
 		 */

@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -17,6 +18,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
@@ -43,12 +45,12 @@ import view.component.viewer.ClientViewer;
 public class LocationChoixVoiture extends JDialog implements ActionListener, ChangeListener {
 
 	private static final long serialVersionUID = 8404941819774905251L;
+	private JDialog frame = this;
 
 	private final JPanel contentPanel = new JPanel();
 	private TitledBorder titledBorder = BorderFactory.createTitledBorder("Choisir voiture <Catégorie>");
 	private JCheckBox assuranceCheckBox = new JCheckBox("<html>Assurance dégradation et accidents</html>");
 	private RessourceSelector ressourceSelector = new RessourceSelector(Vehicule.getHeader());
-	private JComboBox<Agence> agenceComboBox;
 	private JSpinner dateStartSpinner = new JSpinner();
 	private JLabel dureeLabel = new JLabel("-- jours");
 
@@ -81,7 +83,7 @@ public class LocationChoixVoiture extends JDialog implements ActionListener, Cha
 
 			LocationDAO locationDAO = new LocationDAO();
 			devis = locationDAO.getDevis(client.getPersonneID(), dateStart);
-			
+
 			if (devis != null)
 				vehiculesCategorie = locationDAO.getVehiculeDispoByCategorie(devis.getCategorie());
 			else
@@ -108,7 +110,23 @@ public class LocationChoixVoiture extends JDialog implements ActionListener, Cha
 		String action = e.getActionCommand();
 		switch (action) {
 		case "OK":
+			CompletableFuture.runAsync(new Runnable() {
 
+				@Override
+				public void run() {
+					try {
+						new LocationDAO().addLocation(client.getPersonneID(),
+								new java.sql.Date(((SpinnerDateModel) dateStartSpinner.getModel()).getDate().getTime()),
+								(String) ressourceSelector.getSelectedRessourceID());
+
+						dispose();
+					} catch (SQLException e) {
+						JOptionPane.showMessageDialog(frame, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+						e.printStackTrace();
+					}
+
+				}
+			});
 			break;
 
 		case "Cancel":
@@ -197,14 +215,6 @@ public class LocationChoixVoiture extends JDialog implements ActionListener, Cha
 			{
 				JLabel agenceLabel = new JLabel("Agence");
 				panel.add(agenceLabel);
-			}
-			{
-				try {
-					agenceComboBox = new JComboBox(new AgenceDAO().getAgenceList().toArray(new Agence[0]));
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				panel.add(agenceComboBox);
 			}
 		}
 		{
