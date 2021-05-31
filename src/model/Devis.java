@@ -2,6 +2,8 @@ package model;
 
 import java.sql.Timestamp;
 
+import model.enums.TypeCategorie;
+
 /**
  * 
  * @author CAILLEUX, GODIN, ILOO LIANDJA
@@ -13,15 +15,38 @@ public class Devis {
 	private int dureeLocation;
 	private boolean assurance;
 
-	private Client client;
-	private Vehicule voiture;
+	private int clientID;
+	private TypeCategorie categorie;
 
-	public Devis(Timestamp debutLocation, int dureeLocation, boolean assurance, Client client, Vehicule voiture) {
+	public Devis(Timestamp debutLocation, int dureeLocation, boolean assurance, int clientID, TypeCategorie voiture) {
+		super();
 		this.debutLocation = debutLocation;
 		this.dureeLocation = dureeLocation;
 		this.assurance = assurance;
-		this.client = client;
-		this.voiture = voiture;
+		this.clientID = clientID;
+		this.categorie = voiture;
+	}
+
+	/* Getters */
+
+	public Timestamp getDebutLocation() {
+		return debutLocation;
+	}
+
+	public int getDureeLocation() {
+		return dureeLocation;
+	}
+
+	public boolean isAssurance() {
+		return assurance;
+	}
+
+	public int getClientID() {
+		return clientID;
+	}
+
+	public TypeCategorie getCategorie() {
+		return categorie;
 	}
 
 }

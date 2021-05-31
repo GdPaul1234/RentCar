@@ -15,14 +15,13 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.SpinnerDateModel;
 import javax.swing.SwingWorker;
 
 import controller.AgenceDAO;
 import controller.ClientDAO;
+import controller.LocationDAO;
 import controller.VehiculeDAO;
 import model.Agence;
 import model.Client;
@@ -47,7 +46,6 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 	private JButton delButton = new JButton("➖ Suppr.");
 
 	private JTextField searchTextField = new JTextField();
-	JSpinner dateSpinner = new JSpinner();
 	private JComboBox<String> facetComboBox;
 	private RessourceSelector ressourceSelector;
 
@@ -145,7 +143,7 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 				e1.printStackTrace();
 			}
 			break;
-			
+
 		case "filter":
 			filterRessource();
 			break;
@@ -213,21 +211,31 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			break;
 		}
 	}
-	
+
 	private void filterRessource() {
 		// get Filter Facets
 		String filterFacet = (String) facetComboBox.getSelectedItem();
 		System.out.println(filterFacet);
-		
+
 		switch (filterFacet) {
 		case "Tout":
-			dateSpinner.setEnabled(false);
 			// RAZ et refresh table
 			new RefreshTask().execute();
 			break;
 			
+		case "Location en cours":
+			try {
+				List<Client> clientLocationList = new LocationDAO().getClientLocationEnCours();
+				// refresh table
+				ressourceSelector.refreshTable(clientLocationList);
+				ressourceSelector.resizeColumns(Client.getColumnsWidth());
+				ressourceSelector.hideFirstColumn();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			break;
+
 		case "> 80% de sa capacité":
-			dateSpinner.setEnabled(true);
 			break;
 
 		default:
@@ -315,7 +323,6 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 		}
 	}
 
-
 	/**
 	 * Create the view.
 	 */
@@ -351,13 +358,6 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 					facetComboBox.addActionListener(this);
 					facetComboBox.setPreferredSize(new Dimension(125, 30));
 					searchToolBar.add(facetComboBox);
-
-					if (typeRessource.equals("Agence")) {
-						dateSpinner.setModel(new SpinnerDateModel());
-						dateSpinner.setMaximumSize(new Dimension(125, 30));
-						dateSpinner.setEnabled(false);
-						searchToolBar.add(dateSpinner);
-					}
 				}
 
 				searchToolBar.addSeparator();

@@ -48,7 +48,7 @@ public class SouscriptionDAO {
 	public void subcribeClientToProgrammeFidelite(int clientID, int fideliteID) throws SQLException {
 		try {
 			PreparedStatement stmt = instance.getConnection().prepareStatement(
-					"insert into Souscription(pers_id,fidelite_id,date_souscription) VALUES (?,?, CURRENT_DATE();");
+					"insert into Souscription(pers_id,fidelite_id,date_souscription) VALUES (?,?, CURRENT_DATE());");
 			stmt.setInt(1, clientID);
 			stmt.setInt(2, fideliteID);
 			stmt.executeUpdate();
@@ -56,7 +56,7 @@ public class SouscriptionDAO {
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			PreparedStatement stmt = instance.getConnection().prepareStatement(
-					"update Souscription set date_souscription=CURRENT_DATE(),fidelite_id=?  where pers_id=? and fidelite_id=?;");
+					"update Souscription set date_souscription=CURRENT_DATE(), fidelite_id=? where pers_id=? and fidelite_id=?;");
 			stmt.setInt(1, fideliteID);
 			stmt.setInt(2, clientID);
 			stmt.setInt(3, fideliteID);

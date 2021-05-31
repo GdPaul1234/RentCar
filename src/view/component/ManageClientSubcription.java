@@ -18,7 +18,7 @@ import model.ProgrammeFidelite;
  *
  */
 public class ManageClientSubcription {
-	
+
 	CompletableFuture<Void> task = new CompletableFuture<>();
 
 	private Component frame;
@@ -93,9 +93,8 @@ public class ManageClientSubcription {
 			System.out.println("Apply client subcription in DB");
 			try {
 				new SouscriptionDAO().subcribeClientToProgrammeFidelite(clientID, fideliteID);
-			} catch (
-			SQLException e) {
-				// TODO Auto-generated catch block
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(frame, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
 			return null;
