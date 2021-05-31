@@ -239,6 +239,18 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			}
 			break;
 
+		case "Aucune location":
+			try {
+				List<Client> clientNoLocationList = new LocationDAO().getClientNoLocationList();
+				// refresh table
+				ressourceSelector.refreshTable(clientNoLocationList);
+				ressourceSelector.resizeColumns(Client.getColumnsWidth());
+				ressourceSelector.hideFirstColumn();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			break;
+
 		/**
 		 * Voitures
 		 */

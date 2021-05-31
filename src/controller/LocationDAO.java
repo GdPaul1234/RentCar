@@ -112,4 +112,56 @@ public class LocationDAO {
 
 		return result;
 	}
+
+	/**
+	 * obtenir la liste des clients gold
+	 *
+	 * @return liste des clients gold
+	 * @throws SQLException
+	 */
+	public List<Client> getClientGoldList() throws SQLException {
+		// On utilise la vue gold_client !
+		Statement stmt = instance.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery("select * from gold_client;");
+
+		List<Client> result = new ArrayList<>(rs.getFetchSize());
+		while (rs.next()) {
+			Client client = new Client(rs.getString("nom"), rs.getString("prenom"), rs.getString("email"),
+					rs.getString("telephone"),
+					new Adresse(rs.getString("rue"), rs.getString("ville"), rs.getString("CP")));
+			client.setPersonneID(rs.getInt("pers_id"));
+			result.add(client);
+		}
+
+		rs.close();
+		stmt.close();
+
+		return result;
+	}
+
+	/**
+	 * liste des clients n'ayant aucune location enregistrée
+	 *
+	 * @return liste des clients sans historique
+	 * @throws SQLException
+	 */
+	public List<Client> getClientNoLocationList() throws SQLException {
+		Statement stmt = instance.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(
+				"select * from Client natural join Adresse where pers_id not in (select distinct pers_id from Reservation) order by nom, prenom;");
+		List<Client> result = new ArrayList<>(rs.getFetchSize());
+
+		while (rs.next()) {
+			Client client = new Client(rs.getString("nom"), rs.getString("prenom"), rs.getString("email"),
+					rs.getString("telephone"),
+					new Adresse(rs.getString("rue"), rs.getString("ville"), rs.getString("CP")));
+			client.setPersonneID(rs.getInt("pers_id"));
+			result.add(client);
+		}
+
+		rs.close();
+		stmt.close();
+
+		return result;
+	}
 }

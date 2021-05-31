@@ -9,6 +9,7 @@ import java.util.List;
 
 import model.Adresse;
 import model.Agence;
+import model.Client;
 import model.Vehicule;
 import model.enums.TypeBoite;
 import model.enums.TypeCarburant;
@@ -168,6 +169,35 @@ public class VehiculeDAO {
 
 		rs.close();
 		stmtVehicule.close();
+
+		return result;
+	}
+
+	/**
+	 * Retourner tous les clients ayant déja loué le vehicule de matricule donné
+	 *
+	 * @param matricule
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Client> getClientByVehiculeLoue(String matricule) throws SQLException {
+		PreparedStatement stmtClient = instance.getConnection()
+				.prepareStatement("select * from client natural join adresse natural join location where matricule=?");
+		stmtClient.setString(1, matricule);
+
+		ResultSet rs = stmtClient.executeQuery();
+		List<Client> result = new ArrayList<>(rs.getFetchSize());
+
+		while (rs.next()) {
+			Client client = new Client(rs.getString("nom"), rs.getString("prenom"), rs.getString("email"),
+					rs.getString("telephone"),
+					new Adresse(rs.getString("rue"), rs.getString("ville"), rs.getString("CP")));
+			client.setPersonneID(rs.getInt("pers_id"));
+			result.add(client);
+		}
+
+		rs.close();
+		stmtClient.close();
 
 		return result;
 	}
