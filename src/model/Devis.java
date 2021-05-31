@@ -1,6 +1,6 @@
 package model;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 import model.enums.TypeCategorie;
 
@@ -11,14 +11,14 @@ import model.enums.TypeCategorie;
  */
 public class Devis {
 
-	private Timestamp debutLocation;
+	private Date debutLocation;
 	private int dureeLocation;
 	private boolean assurance;
 
 	private int clientID;
 	private TypeCategorie categorie;
 
-	public Devis(Timestamp debutLocation, int dureeLocation, boolean assurance, int clientID, TypeCategorie voiture) {
+	public Devis(Date debutLocation, int dureeLocation, boolean assurance, int clientID, TypeCategorie voiture) {
 		super();
 		this.debutLocation = debutLocation;
 		this.dureeLocation = dureeLocation;
@@ -29,7 +29,7 @@ public class Devis {
 
 	/* Getters */
 
-	public Timestamp getDebutLocation() {
+	public Date getDebutLocation() {
 		return debutLocation;
 	}
 

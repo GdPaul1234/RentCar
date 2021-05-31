@@ -28,7 +28,7 @@ public class LocationDAO {
 	public List<Client> getClientLocationEnCours() throws SQLException {
 		Statement stmt = instance.getConnection().createStatement();
 		ResultSet rs = stmt.executeQuery(
-				"select * from reservation natural join client where NOW() between debut_location and date_add(debut_location,INTERVAL duree_location day);");
+				"select * from Reservation natural join Client natural join Adresse where NOW() between debut_location and date_add(debut_location,INTERVAL duree_location day);");
 
 		ArrayList<Client> result = new ArrayList<>(rs.getFetchSize());
 		while (rs.next()) {
@@ -51,8 +51,8 @@ public class LocationDAO {
 		stmt.setInt(1, reservation.getClientID());
 		stmt.setString(2, reservation.getCategorie().toString());
 		stmt.setBoolean(3, reservation.isAssurance());
-		stmt.setTimestamp(4, reservation.getDebutLocation());
-		stmt.setInt(4, reservation.getDureeLocation());
+		stmt.setDate(4, reservation.getDebutLocation());
+		stmt.setInt(5, reservation.getDureeLocation());
 		stmt.executeUpdate();
 		stmt.close();
 

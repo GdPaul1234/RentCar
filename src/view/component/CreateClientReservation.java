@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -18,6 +19,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
@@ -27,7 +29,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import controller.ClientDAO;
+import controller.LocationDAO;
 import model.Client;
+import model.Devis;
 import model.enums.TypeCategorie;
 import view.component.viewer.ClientViewer;
 
@@ -39,6 +43,8 @@ import view.component.viewer.ClientViewer;
 public class CreateClientReservation extends JDialog implements ActionListener, ChangeListener {
 
 	private static final long serialVersionUID = -2622050431594175169L;
+	private JDialog frame = this;
+	private WaitingDialog waiting;
 
 	private JComboBox<?> categorieComboBox = new JComboBox<>(TypeCategorie.getValues());
 	private JLabel prixCategorieLabel = new JLabel("-- €");
@@ -92,15 +98,36 @@ public class CreateClientReservation extends JDialog implements ActionListener, 
 		}
 
 	}
-	
+
 	class ApplyReservationTask extends SwingWorker<Void, Void> {
+		private boolean error = false;
 
 		@Override
 		protected Void doInBackground() throws Exception {
-			// TODO Auto-generated method stub
+			try {
+				java.sql.Date dateStart = new java.sql.Date(
+						((SpinnerDateModel) dateStartSpinner.getModel()).getDate().getTime());
+				new LocationDAO()
+						.addReservation(new Devis(dateStart, Math.toIntExact(dateDiff), assuranceCheckBox.isSelected(),
+								client.getPersonneID(), (TypeCategorie) categorieComboBox.getSelectedItem()));
+				error = false;
+			} catch (SQLException e) {
+				error = true;
+				JOptionPane.showMessageDialog(frame, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+			}
+
 			return null;
 		}
-		
+
+		@Override
+		protected void done() {
+			waiting.close();
+
+			if (!error)
+				dispose();
+		}
+
 	}
 
 	@Override
@@ -113,7 +140,9 @@ public class CreateClientReservation extends JDialog implements ActionListener, 
 			break;
 
 		case "OK":
-
+			// Launch wait UI
+			waiting = new WaitingDialog(frame);
+			new ApplyReservationTask().execute();
 			break;
 
 		case "Cancel":

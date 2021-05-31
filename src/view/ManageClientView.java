@@ -49,6 +49,7 @@ public class ManageClientView extends JDialog implements ActionListener {
 	public CompletableFuture<Void> run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(frame);
+		setResizable(false);
 		setModal(true);
 		setVisible(true);
 
