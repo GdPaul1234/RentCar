@@ -15,12 +15,10 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingWorker;
@@ -29,9 +27,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import controller.AgenceDAO;
 import controller.LocationDAO;
-import model.Agence;
 import model.Client;
 import model.Devis;
 import model.Vehicule;
@@ -207,14 +203,6 @@ public class LocationChoixVoiture extends JDialog implements ActionListener, Cha
 			}
 			{
 				panel.add(dureeLabel);
-			}
-			{
-				JSeparator separator = new JSeparator();
-				panel.add(separator);
-			}
-			{
-				JLabel agenceLabel = new JLabel("Agence");
-				panel.add(agenceLabel);
 			}
 		}
 		{

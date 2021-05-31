@@ -196,7 +196,16 @@ public class ClientDAO {
 		return result;
 	}
 
-	public BigDecimal[] getPrixReduction(int clientID, TypeCategorie categorie) throws SQLException {
+	/**
+	 * Obtenir le prix journalier d'une catégorie ainsi que les réductions auquel le
+	 * client a droit
+	 * 
+	 * @param clientID
+	 * @param categorie
+	 * @return { tarif catégorie, réduction }
+	 * @throws SQLException
+	 */
+	public BigDecimal[] getCategoriePrixReduction(int clientID, TypeCategorie categorie) throws SQLException {
 		PreparedStatement stmt = instance.getConnection().prepareStatement(
 				"select tarif, ifnull(reduction_active_subcription(?), 0) as reduction from Categorie where categorie=?;");
 		stmt.setInt(1, clientID);

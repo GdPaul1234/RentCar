@@ -11,6 +11,7 @@ import java.util.List;
 import model.Adresse;
 import model.Client;
 import model.Devis;
+import model.Location;
 import model.Vehicule;
 import model.enums.TypeBoite;
 import model.enums.TypeCarburant;
@@ -187,6 +188,66 @@ public class LocationDAO {
 		stmt.setInt(2, clientID);
 		stmt.setDate(3, dateDebut);
 		stmt.executeUpdate();
+
+		instance.getConnection().commit();
+
+		instance.getConnection().setAutoCommit(true);
+	}
+
+	public Vehicule getVoitureLoue(int clientID, Date dateDebut) throws SQLException {
+		PreparedStatement stmt = instance.getConnection()
+				.prepareStatement("select * from Location natural join Vehicule where pers_id=? and debut_location=?;");
+		stmt.setInt(1, clientID);
+		stmt.setDate(2, dateDebut);
+		ResultSet rs = stmt.executeQuery();
+
+		Vehicule result = null;
+		if (rs.next()) {
+			result = new Vehicule(rs.getString("matricule"), rs.getString("marque"), rs.getString("modele"),
+					rs.getBigDecimal("kilometrage"), TypeBoite.get(rs.getString("type_boite")),
+					TypeCarburant.get(rs.getString("type_carburant")), rs.getBoolean("climatisation"),
+					TypeCategorie.get(rs.getString("categorie")));
+		}
+
+		rs.close();
+		stmt.close();
+
+		return result;
+	}
+
+	/**
+	 * marque la fin à une location et assigne le vehicule à une agence
+	 * 
+	 * @param matricule
+	 * @param id_agence
+	 * @throws SQLException
+	 */
+	public void rendueLocation(Location location, int id_agence) throws SQLException {
+		instance.getConnection().setAutoCommit(false);
+
+		PreparedStatement stmt = instance.getConnection()
+				.prepareStatement("update agence set occupation=occupation+1 where id_agence=?");
+		stmt.setInt(1, id_agence);
+		stmt.executeUpdate();
+
+		stmt = instance.getConnection().prepareStatement("update vehicule set id_agence=? where matricule=?");
+		stmt.setInt(1, id_agence);
+		stmt.setString(2, location.getMatricule());
+		stmt.executeUpdate();
+
+		// création d'un rendu
+
+		stmt = instance.getConnection().prepareStatement(
+				"insert into Rendue (matricule,pers_id,debut_location,date_rendue,plein,etat) values (?,?,?,?,?,?)");
+		stmt.setString(1, location.getMatricule());
+		stmt.setInt(2, location.getClientID());
+		stmt.setDate(3, location.getDateDebut());
+		stmt.setDate(4, location.getDateRendue());
+		stmt.setShort(5, location.getPlein());
+		stmt.setString(6, location.getEtat());
+		stmt.executeUpdate();
+
+		stmt.close();
 
 		instance.getConnection().commit();
 

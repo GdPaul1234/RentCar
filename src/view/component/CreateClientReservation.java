@@ -87,7 +87,7 @@ public class CreateClientReservation extends JDialog implements ActionListener, 
 
 		@Override
 		protected Void doInBackground() throws Exception {
-			BigDecimal[] response = new ClientDAO().getPrixReduction(client.getPersonneID(), categorie);
+			BigDecimal[] response = new ClientDAO().getCategoriePrixReduction(client.getPersonneID(), categorie);
 			tarifCategorie = response[0].floatValue();
 			reduction = response[1].floatValue();
 

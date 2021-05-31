@@ -26,6 +26,7 @@ import model.Client;
 import view.component.CreateClientReservation;
 import view.component.LocationChoixVoiture;
 import view.component.ManageClientSubcription;
+import view.component.RendueVoitureClient;
 import view.component.viewer.ClientViewer;
 
 /**
@@ -129,6 +130,8 @@ public class ManageClientView extends JDialog implements ActionListener {
 					}
 
 					{
+						factureButton.setActionCommand("facture");
+						factureButton.addActionListener(this);
 						GridBagConstraints gbc_factureButton = new GridBagConstraints();
 						gbc_factureButton.fill = GridBagConstraints.HORIZONTAL;
 						gbc_factureButton.insets = new Insets(0, 0, 0, 5);
@@ -235,6 +238,10 @@ public class ManageClientView extends JDialog implements ActionListener {
 
 		case "location":
 			new LocationChoixVoiture(client).run(this);
+			break;
+
+		case "facture":
+			new RendueVoitureClient(client.getPersonneID()).run(this);
 			break;
 
 		case "OK":
