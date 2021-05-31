@@ -31,6 +31,11 @@ import model.interfaces.TabularObjectBuilder;
 import view.component.RessourceSelector;
 import view.component.WaitingDialog;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class RessourceEditorView extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 5943840322040278648L;
 

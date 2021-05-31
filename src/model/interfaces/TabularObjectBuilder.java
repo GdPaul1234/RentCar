@@ -3,6 +3,11 @@ package model.interfaces;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public abstract class TabularObjectBuilder {
 
 	public abstract Object[] toArray();

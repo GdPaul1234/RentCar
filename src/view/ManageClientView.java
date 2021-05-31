@@ -8,7 +8,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,9 +24,15 @@ import javax.swing.UIManager;
 import controller.ClientDAO;
 import model.Client;
 import view.component.CreateClientReservation;
+import view.component.LocationChoixVoiture;
 import view.component.ManageClientSubcription;
 import view.component.viewer.ClientViewer;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class ManageClientView extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 8605274728883691615L;
 
@@ -37,12 +46,22 @@ public class ManageClientView extends JDialog implements ActionListener {
 
 	private Client client;
 
-	public void run(Component frame) {
+	public CompletableFuture<Void> run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(frame);
-		setResizable(false);
 		setModal(true);
 		setVisible(true);
+
+		CompletableFuture<Void> finishEditing = new CompletableFuture<>();
+
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent we) {
+				System.out.println("Finish editing");
+				finishEditing.complete(null);
+			}
+		});
+		return finishEditing;
 	}
 
 	/**
@@ -89,6 +108,8 @@ public class ManageClientView extends JDialog implements ActionListener {
 					}
 
 					{
+						locationButton.setActionCommand("location");
+						locationButton.addActionListener(this);
 						GridBagConstraints gbc_locationButton = new GridBagConstraints();
 						gbc_locationButton.fill = GridBagConstraints.HORIZONTAL;
 						gbc_locationButton.insets = new Insets(0, 0, 5, 5);
@@ -209,6 +230,10 @@ public class ManageClientView extends JDialog implements ActionListener {
 		case "reservation":
 			new CreateClientReservation(client).run(this);
 
+			break;
+
+		case "location":
+			new LocationChoixVoiture(client).run(this);
 			break;
 
 		case "OK":

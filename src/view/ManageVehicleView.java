@@ -13,6 +13,11 @@ import javax.swing.border.EmptyBorder;
 import model.Vehicule;
 import view.component.viewer.VehicleViewer;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class ManageVehicleView extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = -4135815382938078333L;

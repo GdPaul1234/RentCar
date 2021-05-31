@@ -31,6 +31,11 @@ import model.Client;
 import model.enums.TypeCategorie;
 import view.component.viewer.ClientViewer;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class CreateClientReservation extends JDialog implements ActionListener, ChangeListener {
 
 	private static final long serialVersionUID = -2622050431594175169L;

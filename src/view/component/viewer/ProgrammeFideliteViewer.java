@@ -14,6 +14,11 @@ import javax.swing.UIManager;
 
 import model.ProgrammeFidelite;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class ProgrammeFideliteViewer extends JPanel {
 
 	private static final long serialVersionUID = -5896799807298529661L;

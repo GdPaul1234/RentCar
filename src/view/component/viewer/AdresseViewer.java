@@ -11,6 +11,11 @@ import javax.swing.UIManager;
 
 import model.Adresse;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class AdresseViewer extends JPanel {
 	private static final long serialVersionUID = -7410136215189921295L;
 

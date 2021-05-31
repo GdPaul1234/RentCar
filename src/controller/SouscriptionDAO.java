@@ -9,6 +9,11 @@ import java.util.List;
 
 import model.ProgrammeFidelite;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class SouscriptionDAO {
 	private DataAccess instance;
 

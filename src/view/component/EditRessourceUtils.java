@@ -10,7 +10,13 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.text.MaskFormatter;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class EditRessourceUtils {
+	
 	private static LineBorder redBorder = new LineBorder(Color.RED);
 	private static Border defaultBorder = UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border");
 

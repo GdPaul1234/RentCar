@@ -14,6 +14,11 @@ import model.enums.TypeBoite;
 import model.enums.TypeCarburant;
 import model.enums.TypeCategorie;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class VehiculeDAO {
 	private DataAccess instance;
 

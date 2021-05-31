@@ -2,6 +2,11 @@ package model.enums;
 
 import java.util.Arrays;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public enum TypeCategorie {
 	ECONOMIQUE, CONFORT, LUXE;
 

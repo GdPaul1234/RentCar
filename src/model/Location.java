@@ -2,6 +2,11 @@ package model;
 
 import java.sql.Timestamp;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class Location {
 
 	private Timestamp dateRendue;

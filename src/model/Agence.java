@@ -6,6 +6,11 @@ import java.util.List;
 
 import model.interfaces.TabularObjectBuilder;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class Agence extends TabularObjectBuilder {
 	private int identifiant;
 	private String nom;

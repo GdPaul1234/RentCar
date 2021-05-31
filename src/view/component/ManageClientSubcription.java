@@ -12,7 +12,13 @@ import javax.swing.SwingWorker;
 import controller.SouscriptionDAO;
 import model.ProgrammeFidelite;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class ManageClientSubcription {
+	
 	CompletableFuture<Void> task = new CompletableFuture<>();
 
 	private Component frame;

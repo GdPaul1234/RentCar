@@ -2,6 +2,11 @@ package model.enums;
 
 import java.util.Arrays;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public enum TypeCarburant {
 	GAZOLE, ESSENCE_SP95, ESSENCE_SP98, GPL, ELECTRIQUE;
 

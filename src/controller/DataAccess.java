@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 /**
  * Connexion à la database (Singleton)
- * @author Paul
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
  *
  */
 public class DataAccess {
@@ -44,6 +44,8 @@ public class DataAccess {
 	 */
 	public static synchronized DataAccess getInstance() {
 		if(instance == null) {
+			// Ask user login
+			
 			String[] args = {"jdbc:mysql://localhost:3306/rentcar","root","ultrasecurepwd"};
 			instance = new DataAccess(args);
 		}

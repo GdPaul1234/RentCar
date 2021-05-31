@@ -5,6 +5,11 @@ import java.util.List;
 
 import model.interfaces.TabularObjectBuilder;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public abstract class Personne extends TabularObjectBuilder {
 	protected int personneID;
 	protected String nom;

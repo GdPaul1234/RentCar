@@ -133,16 +133,6 @@ public class EditClientView extends JDialog implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			EditClientView dialog = new EditClientView();
-			//EditClientView dialog = new EditClientView(1);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public CompletableFuture<Void> run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

@@ -29,6 +29,11 @@ import model.interfaces.TabularObjectBuilder;
 import view.ManageClientView;
 import view.ManageVehicleView;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class RessourceSelector extends JPanel {
 	private static final long serialVersionUID = -8933064533708360284L;
 	private JPanel frame = this;

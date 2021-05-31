@@ -12,7 +12,7 @@ import model.Agence;
 /**
  * Agence Database Access Object
  * 
- * @author Paul
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
  *
  */
 public class AgenceDAO {

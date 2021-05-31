@@ -38,6 +38,11 @@ import model.enums.TypeCategorie;
 import view.component.EditRessourceUtils;
 import view.component.WaitingDialog;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class EditVehicleView extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 8614996964673985215L;
@@ -139,17 +144,6 @@ public class EditVehicleView extends JDialog implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			EditVehicleView dialog = new EditVehicleView();
-			// EditVehicleView dialog = new EditVehicleView("AG-123-GA");
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public CompletableFuture<Void> run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(frame);

@@ -2,6 +2,11 @@ package model;
 
 import java.math.BigDecimal;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class ProgrammeFidelite {
 
 	private int fideliteID;

@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class Employe extends Personne {
 
 	private String login;

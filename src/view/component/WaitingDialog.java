@@ -10,6 +10,11 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class WaitingDialog extends JDialog {
 	
 	private static final long serialVersionUID = 7578532940661029282L;

@@ -8,6 +8,11 @@ import java.util.List;
 
 import model.interfaces.TabularObjectBuilder;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class Client extends Personne {
 	private java.sql.Date dateSouscription;
 	private ProgrammeFidelite prgmFidelite;

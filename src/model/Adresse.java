@@ -4,6 +4,11 @@ import java.util.List;
 
 import model.interfaces.TabularObjectBuilder;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class Adresse extends TabularObjectBuilder {
 	private String rue;
 	private String ville;

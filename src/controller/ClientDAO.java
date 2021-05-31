@@ -16,7 +16,7 @@ import model.enums.TypeCategorie;
 /**
  * Client Database Access Object
  * 
- * @author Paul
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
  *
  */
 public class ClientDAO {

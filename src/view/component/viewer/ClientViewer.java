@@ -12,7 +12,13 @@ import javax.swing.UIManager;
 
 import model.Client;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class ClientViewer extends JPanel {
+	
 	private static final long serialVersionUID = 3712441655271629781L;
 
 	/**

@@ -15,7 +15,13 @@ import javax.swing.UIManager;
 
 import model.Vehicule;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class VehicleViewer extends JPanel {
+	
 	private static final long serialVersionUID = 8456087274597262693L;
 
 	/**

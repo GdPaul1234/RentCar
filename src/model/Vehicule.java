@@ -9,6 +9,11 @@ import model.enums.TypeCarburant;
 import model.enums.TypeCategorie;
 import model.interfaces.TabularObjectBuilder;
 
+/**
+ * 
+ * @author CAILLEUX, GODIN, ILOO LIANDJA
+ *
+ */
 public class Vehicule extends TabularObjectBuilder {
 	private String matricule;
 	private String marque;
