@@ -131,4 +131,9 @@ public class Agence extends TabularObjectBuilder {
 
 	}
 
+	@Override
+	public String toString() {
+		return "[" + occupation + " / " + capacite + "] " + nom;
+	}
+
 }

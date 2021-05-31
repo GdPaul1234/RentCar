@@ -105,11 +105,11 @@ public class RessourceSelector extends JPanel {
 	}
 
 	public <T extends TabularObjectBuilder> void refreshTable(List<T> data) {
+		
 		if (data != null && data.size() > 0) {
 			// map List<T> to T[][]
 			Object[][] dataTable = data.stream().map(v -> v.toArray()).toArray(Object[][]::new);
 			ressourceType = data.size() > 0 ? data.get(0).getClass().getSimpleName() : null;
-			System.out.println(ressourceType);
 
 			table.setModel(new DefaultTableModel(dataTable, header) {
 				private static final long serialVersionUID = 3022428812614654606L;
@@ -124,12 +124,13 @@ public class RessourceSelector extends JPanel {
 					return false;
 				}
 			});
+
 		} else {
 			table.setModel(new DefaultTableModel(null, header));
 		}
 
-		updateLabel.setText(
-				"Mis à jour le : " + new SimpleDateFormat("dd-MM-yyyy à HH:mm").format(Calendar.getInstance().getTime()));
+		updateLabel.setText("Mis à jour le : "
+				+ new SimpleDateFormat("dd-MM-yyyy à HH:mm").format(Calendar.getInstance().getTime()));
 
 	}
 

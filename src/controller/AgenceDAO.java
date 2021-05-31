@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,6 +9,10 @@ import java.util.List;
 
 import model.Adresse;
 import model.Agence;
+import model.Vehicule;
+import model.enums.TypeBoite;
+import model.enums.TypeCarburant;
+import model.enums.TypeCategorie;
 
 /**
  * Agence Database Access Object
@@ -44,6 +49,30 @@ public class AgenceDAO {
 		rs.close();
 		stmt.close();
 
+		return result;
+	}
+
+	/**
+	 * retourne la liste des vehicule stationé dans une donnée
+	 * 
+	 * @param id_agence
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Vehicule> getVehiculeByAgence(int id_agence) throws SQLException {
+		PreparedStatement stmtVehicule = instance.getConnection()
+				.prepareStatement("select * from vehicule natural join agence where id_agence=?;");
+		stmtVehicule.setInt(1, id_agence);
+		ResultSet rs = stmtVehicule.executeQuery();
+		ArrayList<Vehicule> result = new ArrayList<>(rs.getFetchSize());
+		while (rs.next()) {
+			result.add(new Vehicule(rs.getString("matricule"), rs.getString("marque"), rs.getString("modele"),
+					rs.getBigDecimal("kilometrage"), TypeBoite.get(rs.getString("type_boite")),
+					TypeCarburant.get(rs.getString("type_carburant")), rs.getBoolean("climatisation"),
+					TypeCategorie.get(rs.getString("categorie"))));
+		}
+		rs.close();
+		stmtVehicule.close();
 		return result;
 	}
 

@@ -47,6 +47,7 @@ public class MainView extends JFrame {
 
 							if (choice == JOptionPane.YES_OPTION) {
 								try {
+									// close DB connection
 									dataAccess.close();
 								} catch (SQLException e) {
 									e.printStackTrace();

@@ -44,7 +44,7 @@ public class DataAccess {
 	 */
 	public static synchronized DataAccess getInstance() {
 		if(instance == null) {
-			// Ask user login
+			// TODO Ask user login
 			
 			String[] args = {"jdbc:mysql://localhost:3306/rentcar","root","ultrasecurepwd"};
 			instance = new DataAccess(args);

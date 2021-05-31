@@ -22,7 +22,6 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = -4135815382938078333L;
 
-	
 	public void run(Component frame) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(frame);
@@ -53,6 +52,8 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 				contentPanel.add(gestionVehiculePanel);
 				{
 					JButton clientVehiculeButton = new JButton("Clients ayant loué ce véhicule");
+					clientVehiculeButton.setActionCommand("get clients");
+					clientVehiculeButton.addActionListener(this);
 					clientVehiculeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 					clientVehiculeButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
@@ -64,9 +65,11 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 						gestionVehiculePanel.add(verticalStrut);
 					}
 
-					JButton btnNewButton = new JButton("Déplacer ce véhicule");
-					btnNewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-					gestionVehiculePanel.add(btnNewButton);
+					JButton moveVehicleButton = new JButton("Déplacer ce véhicule");
+					clientVehiculeButton.setActionCommand("deplacer");
+					clientVehiculeButton.addActionListener(this);
+					moveVehicleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+					gestionVehiculePanel.add(moveVehicleButton);
 
 				}
 
@@ -76,15 +79,25 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 		pack();
 	}
 
-	
-
 	/**
 	 * Respond to user interactions
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		String action = e.getActionCommand();
+		switch (action) {
+		case "get clients":
+
+			break;
+
+		case "deplacer":
+
+			break;
+
+		default:
+			break;
+		}
+
 	}
 
 }

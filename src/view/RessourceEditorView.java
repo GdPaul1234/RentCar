@@ -26,6 +26,7 @@ import controller.VehiculeDAO;
 import model.Agence;
 import model.Client;
 import model.Vehicule;
+import model.enums.TypeCategorie;
 import model.interfaces.TabularObjectBuilder;
 import view.component.RessourceSelector;
 import view.component.WaitingDialog;
@@ -222,7 +223,7 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			// RAZ et refresh table
 			new RefreshTask().execute();
 			break;
-			
+
 		case "Location en cours":
 			try {
 				List<Client> clientLocationList = new LocationDAO().getClientLocationEnCours();
@@ -236,6 +237,21 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			break;
 
 		case "> 80% de sa capacité":
+			break;
+
+		case "ECONOMIQUE disponible":
+		case "CONFORT disponible":
+		case "LUXE disponible":
+			try {
+				List<Vehicule> vehiculeDispoList = new LocationDAO()
+						.getVehiculeDispoByCategorie(filterFacet.contains("ECONOMIQUE") ? TypeCategorie.ECONOMIQUE
+								: filterFacet.contains("CONFORT") ? TypeCategorie.CONFORT : TypeCategorie.LUXE);
+				// refresh table
+				ressourceSelector.refreshTable(vehiculeDispoList);
+				ressourceSelector.resizeColumns(Vehicule.getColumnsWidth());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			break;
 
 		default:
