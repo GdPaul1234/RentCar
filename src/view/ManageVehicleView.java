@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -14,8 +15,9 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
-import controller.LocationDAO;
+import controller.AgenceDAO;
 import controller.VehiculeDAO;
+import model.Agence;
 import model.Client;
 import model.Vehicule;
 import view.component.RessourceSelector;
@@ -114,7 +116,29 @@ public class ManageVehicleView extends JDialog implements ActionListener {
 			break;
 
 		case "deplacer":
+			try {
+				// Ask agence where we want to move this vehicle
+				AgenceDAO agenceDAO = new AgenceDAO();
+				List<Agence> agences = agenceDAO.getAgenceList();
+				Agence choice = (Agence) JOptionPane.showInputDialog(frame, "Déplacer ce véhicule vers :",
+						"Deplacement véhicule", JOptionPane.PLAIN_MESSAGE, null, agences.toArray(new Agence[0]), null);
 
+				CompletableFuture.runAsync(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							agenceDAO.moveVehiculeTo(vehicule.getMatricule(), choice.getIdentifiant());
+						} catch (SQLException e) {
+							JOptionPane.showMessageDialog(frame, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+							e.printStackTrace();
+						}
+
+					}
+				});
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 			break;
 
 		default:

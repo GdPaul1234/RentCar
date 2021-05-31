@@ -98,4 +98,26 @@ public class AgenceDAO {
 		return result;
 	}
 
+	public void moveVehiculeTo(String matricule, int id_agence) throws SQLException {
+		instance.getConnection().setAutoCommit(false);
+
+		PreparedStatement stmt = instance.getConnection()
+				.prepareStatement("update agence set occupation = occupation+1 where id_agence = ?;");
+		stmt.setInt(1, id_agence);
+		stmt.executeUpdate();
+
+		stmt = instance.getConnection().prepareStatement(
+				"update agence set occupation = occupation-1 where id_agence = (select id_agence from Vehicule where matricule=?);");
+		stmt.setString(1, matricule);
+		stmt.executeUpdate();
+
+		stmt = instance.getConnection().prepareStatement("update Vehicule set id_agence = 2 where matricule=?;");
+		stmt.setString(1, matricule);
+		stmt.executeUpdate();
+		instance.getConnection().commit();
+
+		instance.getConnection().setAutoCommit(true);
+		stmt.close();
+	}
+
 }
