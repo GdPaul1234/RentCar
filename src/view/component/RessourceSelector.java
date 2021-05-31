@@ -1,6 +1,7 @@
 package view.component;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import controller.AgenceDAO;
 import controller.ClientDAO;
 import controller.VehiculeDAO;
 import model.Client;
@@ -105,7 +108,7 @@ public class RessourceSelector extends JPanel {
 	}
 
 	public <T extends TabularObjectBuilder> void refreshTable(List<T> data) {
-		
+
 		if (data != null && data.size() > 0) {
 			// map List<T> to T[][]
 			Object[][] dataTable = data.stream().map(v -> v.toArray()).toArray(Object[][]::new);
@@ -167,12 +170,13 @@ public class RessourceSelector extends JPanel {
 			if (getRowRessourceID(row) != null) {
 				switch (ressourceType) {
 				case "Client":
-					ClientDAO clientDAO = new ClientDAO();
-					return clientDAO.getClient((int) getRowRessourceID(row));
+					return new ClientDAO().getClient((int) getRowRessourceID(row));
 
 				case "Vehicule":
-					VehiculeDAO vehiculeDAO = new VehiculeDAO();
-					return vehiculeDAO.getVehicule((String) getRowRessourceID(row));
+					return new VehiculeDAO().getVehicule((String) getRowRessourceID(row));
+
+				case "Agence":
+					return new AgenceDAO().getVehiculeByAgence((int) getRowRessourceID(row));
 
 				default:
 					break;
@@ -185,6 +189,7 @@ public class RessourceSelector extends JPanel {
 		/*
 		 * Executed in event dispatch thread
 		 */
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void done() {
 			try {
@@ -197,6 +202,16 @@ public class RessourceSelector extends JPanel {
 
 					case "Vehicule":
 						new ManageVehicleView((Vehicule) ressource).run(frame);
+						break;
+
+					case "Agence":
+						RessourceSelector listeVehiculeView = new RessourceSelector(Vehicule.getHeader());
+						listeVehiculeView.refreshTable((List<Vehicule>) ressource);
+						listeVehiculeView.resizeColumns(Vehicule.getColumnsWidth());
+						listeVehiculeView.setPreferredSize(new Dimension(500, 240));
+						JOptionPane.showMessageDialog(frame, listeVehiculeView, "Véhicules dans cette agence",
+								JOptionPane.INFORMATION_MESSAGE);
+						break;
 
 					default:
 					}
