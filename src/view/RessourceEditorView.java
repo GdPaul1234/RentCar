@@ -224,6 +224,9 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			new RefreshTask().execute();
 			break;
 
+		/**
+		 * Client
+		 */
 		case "Location en cours":
 			try {
 				List<Client> clientLocationList = new LocationDAO().getClientLocationEnCours();
@@ -236,8 +239,9 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			}
 			break;
 
-		case "> 80% de sa capacité":
-			break;
+		/**
+		 * Voitures
+		 */
 
 		case "ECONOMIQUE disponible":
 		case "CONFORT disponible":
@@ -252,6 +256,23 @@ public class RessourceEditorView extends JPanel implements ActionListener {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+			break;
+
+		/**
+		 * Agence
+		 */
+
+		case "> 80% de sa capacité":
+			try {
+				List<Agence> agenceQuasiFull = new AgenceDAO().getAgencePleineList();
+				// refresh table
+				ressourceSelector.refreshTable(agenceQuasiFull);
+				ressourceSelector.resizeColumns(Agence.getColumnsWidth());
+				ressourceSelector.hideFirstColumn();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
 			break;
 
 		default:

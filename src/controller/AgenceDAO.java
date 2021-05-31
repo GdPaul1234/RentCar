@@ -53,7 +53,7 @@ public class AgenceDAO {
 	}
 
 	/**
-	 * retourne la liste des vehicule stationé dans une donnée
+	 * Retourner la liste des vehicules stationés dans une agence donnée
 	 * 
 	 * @param id_agence
 	 * @return
@@ -73,6 +73,28 @@ public class AgenceDAO {
 		}
 		rs.close();
 		stmtVehicule.close();
+		return result;
+	}
+
+	/**
+	 * renvoie la liste des agences ayant + de 80% de leur capacité occupé
+	 *
+	 * @return liste d'agence à +80% capacité
+	 * @throws SQLException
+	 */
+	public List<Agence> getAgencePleineList() throws SQLException {
+		Statement stmt = instance.getConnection().createStatement();
+		ResultSet rs = stmt.executeQuery(
+				"select * from agence natural join adresse where occupation >= capacite*0.80 order by id_agence;");
+		ArrayList<model.Agence> result = new ArrayList<>(rs.getFetchSize());
+		while (rs.next()) {
+			model.Agence agence = new model.Agence(rs.getInt("id_agence"), rs.getString("nom"),
+					rs.getString("telephone"), rs.getString("geolocalisation"), rs.getInt("occupation"),
+					rs.getInt("capacite"), new Adresse(rs.getString("rue"), rs.getString("ville"), rs.getString("CP")));
+			result.add(agence);
+		}
+		rs.close();
+		stmt.close();
 		return result;
 	}
 
